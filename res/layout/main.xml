@@ -11,11 +11,11 @@
 	<LinearLayout android:layout_height="wrap_content"
 		android:layout_width="fill_parent" android:orientation="horizontal">
 		
-		<Button android:text="Start" android:id="@+id/start"
-			android:layout_height="wrap_content" android:layout_width="wrap_content"
+		<Button android:text="@string/start" android:id="@+id/start_stop"
+			android:layout_height="wrap_content" android:layout_width="0dp"
 			android:layout_weight="1"></Button>
-		<Button android:text="Stop" android:id="@+id/stop"
-			android:layout_height="wrap_content" android:layout_width="wrap_content"
+		<Button android:text="@string/reset" android:id="@+id/reset"
+			android:layout_height="wrap_content" android:layout_width="0dp"
 			android:layout_weight="1"></Button>
 	</LinearLayout>
 	
