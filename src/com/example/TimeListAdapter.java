@@ -1,13 +1,14 @@
 package com.example;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class TimeListAdapter extends ArrayAdapter<Time> {
+public class TimeListAdapter extends ArrayAdapter<Long> {
     
     public TimeListAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
@@ -20,13 +21,13 @@ public class TimeListAdapter extends ArrayAdapter<Time> {
             view = LayoutInflater.from(getContext()).inflate(R.layout.time_row, null);
         }
         
-        Time time = getItem(position);
+        long time = getItem(position);
         
         TextView name = (TextView) view.findViewById(R.id.lap_name);
         name.setText("Session " + (position+1) );
         
         TextView lapTime = (TextView) view.findViewById(R.id.lap_time);
-        lapTime.setText(time.time);
+        lapTime.setText(DateUtils.formatElapsedTime(time));
         
         return view;
     }
