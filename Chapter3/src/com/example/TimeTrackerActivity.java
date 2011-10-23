@@ -1,16 +1,20 @@
 package com.example;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.text.format.DateUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class TimeTrackerActivity extends Activity implements OnClickListener {
+public class TimeTrackerActivity extends FragmentActivity implements OnClickListener {
     private TimeTask mTimeTask = null;
     private TimeListAdapter mTimeListAdapter = null;
 
@@ -27,8 +31,8 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
         Button startButton = (Button) findViewById(R.id.start_stop);
         startButton.setOnClickListener(this);
 
-        Button stopButton = (Button) findViewById(R.id.reset);
-        stopButton.setOnClickListener(this);
+        Button finishButton = (Button) findViewById(R.id.finish);
+        finishButton.setOnClickListener(this);
 
         if (mTimeListAdapter == null)
             mTimeListAdapter = new TimeListAdapter(this, 0);
@@ -55,7 +59,7 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
                 mTimeTask.stopped = true;
                 ssButton.setText(R.string.start);
             }
-        } else if (v.getId() == R.id.reset) {
+        } else if (v.getId() == R.id.finish) {
             if (mTimeTask != null) {
                 mTimeTask.stopped = true;
                 mTimeTask.keepRunning = false;
@@ -64,6 +68,29 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
             counter.setText(DateUtils.formatElapsedTime(0));
             ssButton.setText(R.string.start);
             mTimeTask = null;
+        }
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case R.id.clear_all:
+            //Testing
+            FragmentManager fm = getSupportFragmentManager();
+            if (fm.findFragmentByTag("dialog") == null) {
+                ConfirmClearDialogFragment frag = ConfirmClearDialogFragment.newInstance(mTimeListAdapter);
+                frag.show(fm, "dialog");
+            }
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
