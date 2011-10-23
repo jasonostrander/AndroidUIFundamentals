@@ -1,27 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:orientation="vertical">
-	
-	<TextView android:id="@+id/counter" android:text="0"
-		android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"
-		android:gravity="center" android:padding="10dp"
-		android:layout_width="fill_parent" android:textSize="50dp"></TextView>
-		
-	<LinearLayout android:layout_height="wrap_content"
-		android:layout_width="fill_parent" android:orientation="horizontal">
-		
-		<Button android:text="@string/start" android:id="@+id/start_stop"
-			android:layout_height="wrap_content" android:layout_width="0dp"
-			android:layout_weight="1"></Button>
-		<Button android:text="@string/reset" android:id="@+id/reset"
-			android:layout_height="wrap_content" android:layout_width="0dp"
-			android:layout_weight="1"></Button>
-	</LinearLayout>
-	
-	<ListView android:layout_weight="1" android:layout_width="fill_parent"
-		android:layout_height="0dp" android:id="@+id/time_list">
-		<!-- Preview: listitem=@layout/time_row -->
-	</ListView>
-	
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/counter"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="50dp" >
+    </TextView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/start_stop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/start" >
+        </Button>
+
+        <Button
+            android:id="@+id/reset"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/finish" >
+        </Button>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/time_list"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <!-- Preview: listitem=@layout/time_row -->
+    </ListView>
+
 </LinearLayout>

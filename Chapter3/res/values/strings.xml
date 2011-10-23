@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="hello">Hello World, TimeTrackerActivity!</string>
-	<string name="app_name">TimeTracker</string>
 
-	<string name="elapsed_time_format">%1$d:%2$02d:%3$02d:%4$03d</string>
-	<string name="reset">Reset</string>
-	<string name="start">Start</string>
-	<string name="stop">Stop</string>
-
+    <string name="hello">Hello World, TimeTrackerActivity!</string>
+    <string name="app_name">TimeTracker</string>
+    <string name="elapsed_time_format">%1$d:%2$02d:%3$02d:%4$03d</string>
+    <string name="finish">Finish</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="clear_all">Clear All</string>
+        
 </resources>
