@@ -14,4 +14,6 @@
     <string name="confirm_clear_all_title">Are you sure?</string>
     <string name="confirm_clear_all_message">If you clear all tasks, you will not be able to restore them.</string>
 
+        <string name="running_timer_notification_title">Timer Running</string>
+        <string name="running_timer_notification_message">Current time: %1$s</string>
 </resources>
