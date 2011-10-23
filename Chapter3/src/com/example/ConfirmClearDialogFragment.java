@@ -23,8 +23,8 @@ public class ConfirmClearDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
-        .setTitle("Are you sure?")
-        .setMessage("If you clear all tasks, you cannot get them back.")
+        .setTitle(R.string.confirm_clear_all_title)
+        .setMessage(R.string.confirm_clear_all_message)
         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             
             @Override

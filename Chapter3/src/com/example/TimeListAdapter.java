@@ -1,6 +1,7 @@
 package com.example;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +24,10 @@ public class TimeListAdapter extends ArrayAdapter<Long> {
         
         long time = getItem(position);
         
+        Resources res = getContext().getResources();
+        
         TextView name = (TextView) view.findViewById(R.id.lap_name);
-        name.setText("Session " + (position+1) );
+        name.setText(String.format(res.getString(R.string.task_name), position+1) );
         
         TextView lapTime = (TextView) view.findViewById(R.id.lap_time);
         lapTime.setText(DateUtils.formatElapsedTime(time));
