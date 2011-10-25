@@ -28,6 +28,7 @@ import android.widget.TextView;
 public class TimeTrackerActivity extends FragmentActivity implements OnClickListener, ServiceConnection {
     public static final String ACTION_TIME_UPDATE = "ActionTimeUpdate";
     public static final String ACTION_TIMER_FINISHED = "ActionTimerFinished";
+    private static final String TAG = "TimeTrackerActivity";
 
     public static int TIMER_NOTIFICATION = 0;
 
@@ -38,7 +39,7 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.v("jason", "Activity.onCreate");
+        Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
@@ -68,7 +69,7 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
     
     @Override
     protected void onResume() {
-        Log.v("jason", "Activity.onResume");
+        Log.i(TAG, "onResume");
         super.onResume();
 
         // Bind to the TimerService
@@ -159,13 +160,13 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
     
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        Log.v("jason", "onServiceConnected");
+        Log.i(TAG, "onServiceConnected");
         mTimerService = ((TimerService.LocalBinder)service).getService();
     }
     
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        Log.v("jason", "onServiceDisconnected");
+        Log.i(TAG, "onServiceDisconnected");
         mTimerService = null;
     }
 }

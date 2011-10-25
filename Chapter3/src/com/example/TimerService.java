@@ -12,6 +12,8 @@ import android.text.format.DateUtils;
 import android.util.Log;
 
 public class TimerService extends Service {
+    private static final String TAG = "TimerService";
+
     public static int TIMER_NOTIFICATION = 0;
 
     private NotificationManager mNM;
@@ -56,13 +58,13 @@ public class TimerService extends Service {
     
     @Override
     public void onCreate() {
-        Log.v("jason", "onCreate");
+        Log.i(TAG, "onCreate");
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.v("jason", "Received start id " + startId + ": " + intent);
+        Log.i(TAG, "Received start id " + startId + " with intent: " + intent);
 
         // Show notification when we start the timer
         showNotification();
@@ -80,7 +82,7 @@ public class TimerService extends Service {
     
     @Override
     public void onDestroy() {
-        Log.v("jason", "TS.onDestroy");
+        Log.i(TAG, "onDestroy");
         // Cancel the ongoing notification.
         mNM.cancel(TIMER_NOTIFICATION);
         
@@ -92,7 +94,7 @@ public class TimerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.v("jason", "onBind");
+        Log.i(TAG, "onBind: " + intent);
         return mBinder;
     }
     
