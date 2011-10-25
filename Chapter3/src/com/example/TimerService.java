@@ -80,7 +80,7 @@ public class TimerService extends Service {
     
     @Override
     public void onDestroy() {
-        Log.v("jason", "onDestroy");
+        Log.v("jason", "TS.onDestroy");
         // Cancel the ongoing notification.
         mNM.cancel(TIMER_NOTIFICATION);
         
@@ -123,7 +123,8 @@ public class TimerService extends Service {
      */
     private void showNotification() {
         mNotification = new Notification(R.drawable.icon, null, System.currentTimeMillis());
-        updateNotification(0);
+        // Use start foreground as user would notice if timer was stopped
+        startForeground(TIMER_NOTIFICATION, mNotification);
     }
 
     /**
@@ -148,8 +149,8 @@ public class TimerService extends Service {
         intent.putExtra("time", time);
         sendBroadcast(intent);
         
-        // Cancel the notification
-        mNM.cancel(TIMER_NOTIFICATION);
+        // Stop the notification
+        stopForeground(true);
     }
     
     private void updateTime(long time) {

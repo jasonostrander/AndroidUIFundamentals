@@ -82,9 +82,9 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
         
         if (mTimerService != null) {
             unbindService(this);
-            mTimerService.stop();
             mTimerService = null;
         }
+        super.onDestroy();
     }
     
     @Override
