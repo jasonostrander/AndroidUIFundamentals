@@ -1,19 +1,14 @@
 package com.example;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
@@ -33,11 +28,9 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
     public static final String ACTION_TIME_UPDATE = "ActionTimeUpdate";
     public static final String ACTION_TIMER_FINISHED = "ActionTimerFinished";
     private static final String TAG = "TimeTrackerActivity";
-
     public static int TIMER_NOTIFICATION = 0;
 
     private TimeListAdapter mTimeListAdapter = null;
-    
     private TimerService mTimerService = null;
 
     /** Called when the activity is first created. */
