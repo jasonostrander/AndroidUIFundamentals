@@ -7,18 +7,21 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.text.format.DateUtils;
 import android.util.Log;
 
 public class TimerService extends Service {
     private static final String TAG = "TimerService";
-
     public static int TIMER_NOTIFICATION = 0;
 
-    private NotificationManager mNM;
-    private Notification mNotification;
-    
+    private NotificationManager mNM = null;
+    private Notification mNotification = null;
+    private long mStart = 0;
+    private long mTime = 0;
+
     public class LocalBinder extends Binder {
         TimerService getService() {
             return TimerService.this;
@@ -26,36 +29,18 @@ public class TimerService extends Service {
     }
     private final IBinder mBinder = new LocalBinder();
 
-    private class TimerThread extends Thread {
-        public boolean keepRunning = false;
-        public boolean stopped = false;
-        public long time = 0;
-
-        @Override
-        public void run() {
-            keepRunning = true;
-            long start = 0;
-            while (keepRunning) {
-                start = System.currentTimeMillis();
-                
-                // Sleep each iteration of the thread
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                if (!stopped) {
-                    time += System.currentTimeMillis() - start;
-                    updateTime(time);
-                }
-            }
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            long current = System.currentTimeMillis();
+            mTime += current - mStart;
+            mStart = current;
             
-            timerStopped(time);
-        }
-    }
-    private TimerThread mTimerThread = null;
-    
+            updateTime(mTime);
+            
+            mHandler.sendEmptyMessageDelayed(0, 100);
+        };
+    };
+
     @Override
     public void onCreate() {
         Log.i(TAG, "onCreate");
@@ -68,28 +53,22 @@ public class TimerService extends Service {
 
         // Show notification when we start the timer
         showNotification();
-        
-        // start thread to handle updates
-        if (mTimerThread == null) {
-            mTimerThread = new TimerThread();
-            mTimerThread.start();
-        } else
-            mTimerThread.stopped = false;
 
+        mStart = System.currentTimeMillis();
+        mHandler.removeMessages(0);
+        mHandler.sendEmptyMessage(0);
+        
         // Keep restarting until we stop the service
         return START_STICKY;
     }
-    
+
     @Override
     public void onDestroy() {
         Log.i(TAG, "onDestroy");
         // Cancel the ongoing notification.
         mNM.cancel(TIMER_NOTIFICATION);
         
-        if (mTimerThread != null) {
-            mTimerThread.keepRunning = false;
-            mTimerThread = null;
-        }
+        mHandler.removeMessages(0);
     }
 
     @Override
@@ -97,34 +76,30 @@ public class TimerService extends Service {
         Log.i(TAG, "onBind: " + intent);
         return mBinder;
     }
-    
+
     public void stop() {
-        if (mTimerThread != null)
-            mTimerThread.stopped = true;
-        
+        mHandler.removeMessages(0);
         stopSelf();
         mNM.cancel(TIMER_NOTIFICATION);
     }
-    
+
     public boolean isStopped() {
-        if (mTimerThread == null)
-            return true;
-        return mTimerThread.stopped;
+        return !mHandler.hasMessages(0);
     }
 
     public void reset() {
-        if (mTimerThread != null) {
-            mTimerThread.stopped = true;
-            mTimerThread.keepRunning = false;
-            mTimerThread = null;
-        }
+        stop();
+        timerStopped(mTime);
+        mTime = 0;
     }
-    
+
     /**
      * Shows the timer notification
      */
     private void showNotification() {
         mNotification = new Notification(R.drawable.icon, null, System.currentTimeMillis());
+        mNotification.flags = Notification.FLAG_ONGOING_EVENT;
+        
         // Use start foreground as user would notice if timer was stopped
         startForeground(TIMER_NOTIFICATION, mNotification);
     }
@@ -150,17 +125,17 @@ public class TimerService extends Service {
         Intent intent = new Intent(TimeTrackerActivity.ACTION_TIMER_FINISHED);
         intent.putExtra("time", time);
         sendBroadcast(intent);
-        
+
         // Stop the notification
         stopForeground(true);
     }
-    
+
     private void updateTime(long time) {
         // Broadcast the new time
         Intent intent = new Intent(TimeTrackerActivity.ACTION_TIME_UPDATE);
         intent.putExtra("time", time);
         sendBroadcast(intent);
-        
+
         // Now update the notification
         updateNotification(time);
     }
