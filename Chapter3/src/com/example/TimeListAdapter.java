@@ -1,5 +1,7 @@
 package com.example;
 
+import java.util.List;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.format.DateUtils;
@@ -11,8 +13,8 @@ import android.widget.TextView;
 
 public class TimeListAdapter extends ArrayAdapter<Long> {
     
-    public TimeListAdapter(Context context, int textViewResourceId) {
-        super(context, textViewResourceId);
+    public TimeListAdapter(Context context, int textViewResourceId, List<Long> list) {
+        super(context, textViewResourceId, list);
     }
     
     @Override

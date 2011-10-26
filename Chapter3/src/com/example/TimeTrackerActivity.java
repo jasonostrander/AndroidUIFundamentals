@@ -1,5 +1,9 @@
 package com.example;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -52,9 +56,20 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
 
         Button finishButton = (Button) findViewById(R.id.finish);
         finishButton.setOnClickListener(this);
-
-        if (mTimeListAdapter == null)
-            mTimeListAdapter = new TimeListAdapter(this, 0);
+        
+        List<Long> values = new ArrayList<Long>();
+        if (savedInstanceState != null) {
+            long[] arr = savedInstanceState.getLongArray("times");
+            for (long l : arr) {
+                values.add(l);
+            }
+            
+            CharSequence seq = savedInstanceState.getCharSequence("currentTime");
+            if (seq != null)
+                counter.setText(seq);
+        }
+        
+        mTimeListAdapter = new TimeListAdapter(this, 0, values);
         
         ListView list = (ListView) findViewById(R.id.time_list);
         list.setAdapter(mTimeListAdapter);
@@ -65,6 +80,23 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
         filter.addAction(ACTION_TIMER_FINISHED);
         registerReceiver(mTimeReceiver, filter);
         
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mTimeListAdapter != null) {
+            int count = mTimeListAdapter.getCount();
+            long[] arr = new long[count];
+            for (int i = 0; i<count; i++) {
+                arr[i] = mTimeListAdapter.getItem(i);
+            }
+            outState.putLongArray("times", arr);
+        }
+
+        TextView counter = (TextView) findViewById(R.id.counter);
+        if (counter != null)
+            outState.putCharSequence("currentTime", counter.getText());
+        super.onSaveInstanceState(outState);
     }
     
     @Override
