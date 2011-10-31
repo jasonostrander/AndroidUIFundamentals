@@ -1,8 +1,9 @@
 package com.example;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,8 +12,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class TimeTrackerActivity extends Activity implements OnClickListener {
-    private TimeTask mTimeTask = null;
     private TimeListAdapter mTimeListAdapter = null;
+    private long mStart = 0;
+    private long mTime = 0;
+
 
     /** Called when the activity is first created. */
     @Override
@@ -38,72 +41,63 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
     }
     
     @Override
+    protected void onDestroy() {
+        mHandler.removeMessages(0);
+        super.onDestroy();
+    }
+    
+    @Override
     public void onClick(View v) {
         TextView ssButton = (TextView) findViewById(R.id.start_stop);
 
         if (v.getId() == R.id.start_stop) {
-            if (mTimeTask == null) {
-                // handle start
-                mTimeTask = new TimeTask();
-                mTimeTask.execute( (Void[])null );
-
-                ssButton.setText(R.string.stop);
-            } else if (mTimeTask.stopped == true) {
-                mTimeTask.stopped = false;
+            if (isTimerStopped()) {
+                startTimer();
                 ssButton.setText(R.string.stop);
             } else {
-                mTimeTask.stopped = true;
+                stopTimer();
                 ssButton.setText(R.string.start);
             }
         } else if (v.getId() == R.id.reset) {
-            if (mTimeTask != null) {
-                mTimeTask.stopped = true;
-                mTimeTask.keepRunning = false;
-            }
+            resetTimer();
             TextView counter = (TextView) findViewById(R.id.counter);
             counter.setText(DateUtils.formatElapsedTime(0));
             ssButton.setText(R.string.start);
-            mTimeTask = null;
         }
     }
 
-    public class TimeTask extends AsyncTask<Void, Long, Long> {
-        public boolean keepRunning = false;
-        public boolean stopped = false;
+    private void startTimer() {
+        mStart = System.currentTimeMillis();
+        mHandler.removeMessages(0);
+        mHandler.sendEmptyMessage(0);
+    }
+ 
+    private void stopTimer() {
+        mHandler.removeMessages(0);
+    }
+    
+    private boolean isTimerStopped() {
+        return !mHandler.hasMessages(0);
+    }
 
-        @Override
-        protected Long doInBackground(Void... params) {
-            keepRunning = true;
-            long time = 0;
-            long start = 0;
-            while (keepRunning) {
-                start = System.currentTimeMillis();
-                
-                // Sleep each iteration of the thread
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                if (!stopped) {
-                    time += System.currentTimeMillis() - start;
-                    publishProgress(time/1000);
-                }
-            }
-            return time/1000;
-        }
+    private void resetTimer() {
+        stopTimer();
+        if (mTimeListAdapter != null)
+            mTimeListAdapter.add(mTime/1000);
         
-        @Override
-        protected void onProgressUpdate(Long... values) {
+        mTime = 0;
+    }
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            long current = System.currentTimeMillis();
+            mTime += current - mStart;
+            mStart = current;
+            
             TextView counter = (TextView) TimeTrackerActivity.this.findViewById(R.id.counter);
-            counter.setText(DateUtils.formatElapsedTime(values[0]));
-        }
-        
-        @Override
-        protected void onPostExecute(Long result) {
-            if (mTimeListAdapter != null)
-                mTimeListAdapter.add(result);
-        }
-    }
+            counter.setText(DateUtils.formatElapsedTime(mTime/1000));
+            
+            mHandler.sendEmptyMessageDelayed(0, 100);
+        };
+    };
 }
