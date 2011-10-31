@@ -26,10 +26,9 @@ public class TimeListAdapter extends ArrayAdapter<Long> {
         
         long time = getItem(position);
         
-        Resources res = getContext().getResources();
-        
         TextView name = (TextView) view.findViewById(R.id.lap_name);
-        name.setText(String.format(res.getString(R.string.task_name), position+1) );
+        String taskString = getContext().getResources().getString(R.string.task_name);
+        name.setText(String.format(taskString, position+1));
         
         TextView lapTime = (TextView) view.findViewById(R.id.lap_time);
         lapTime.setText(DateUtils.formatElapsedTime(time));
