@@ -3,7 +3,6 @@ package com.example;
 import java.util.List;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;

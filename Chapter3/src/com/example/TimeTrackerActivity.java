@@ -184,13 +184,13 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            long time = intent.getLongExtra("time", 0);
+
             if (ACTION_TIME_UPDATE.equals(action)) {
-                long time = intent.getLongExtra("time", 0);
                 TextView counter = (TextView) TimeTrackerActivity.this.findViewById(R.id.counter);
                 counter.setText(DateUtils.formatElapsedTime(time/1000));
             } else if (ACTION_TIMER_FINISHED.equals(action)) {
-                long time = intent.getLongExtra("time", 0);
-                if (mTimeListAdapter != null)
+                if (mTimeListAdapter != null && time > 0)
                     mTimeListAdapter.add(time/1000);
             }
         }
