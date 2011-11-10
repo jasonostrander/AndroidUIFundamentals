@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,7 +23,7 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
+
         // Initialize the Timer
         TextView counter = (TextView) findViewById(R.id.counter);
         counter.setText(DateUtils.formatElapsedTime(0));
@@ -35,23 +36,36 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
 
         if (mTimeListAdapter == null)
             mTimeListAdapter = new TimeListAdapter(this, 0);
-        
+
         ListView list = (ListView) findViewById(R.id.time_list);
         list.setAdapter(mTimeListAdapter);
+
+        if (Util.isDebugMode(this)) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+            .detectAll()
+            .penaltyLog()
+            .penaltyDialog()
+            .build());
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+            .detectAll()
+            .penaltyLog()
+            .penaltyDialog()
+            .build());
+        }
     }
-    
+
     @Override
     protected void onDestroy() {
         mHandler.removeMessages(0);
         super.onDestroy();
     }
-    
+
     @Override
     public void onClick(View v) {
         TextView ssButton = (TextView) findViewById(R.id.start_stop);
 
         if (v.getId() == R.id.start_stop) {
-            if (isTimerStopped()) {
+            if (!isTimerRunning()) {
                 startTimer();
                 ssButton.setText(R.string.stop);
             } else {
@@ -71,20 +85,20 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
         mHandler.removeMessages(0);
         mHandler.sendEmptyMessage(0);
     }
- 
+
     private void stopTimer() {
         mHandler.removeMessages(0);
     }
-    
-    private boolean isTimerStopped() {
-        return !mHandler.hasMessages(0);
+
+    private boolean isTimerRunning() {
+        return mHandler.hasMessages(0);
     }
 
     private void resetTimer() {
         stopTimer();
         if (mTimeListAdapter != null)
             mTimeListAdapter.add(mTime/1000);
-        
+
         mTime = 0;
     }
 
@@ -93,10 +107,10 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
             long current = System.currentTimeMillis();
             mTime += current - mStart;
             mStart = current;
-            
+
             TextView counter = (TextView) TimeTrackerActivity.this.findViewById(R.id.counter);
             counter.setText(DateUtils.formatElapsedTime(mTime/1000));
-            
+
             mHandler.sendEmptyMessageDelayed(0, 100);
         };
     };
