@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.format.DateUtils;
@@ -72,7 +73,19 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
         filter.addAction(ACTION_TIME_UPDATE);
         filter.addAction(ACTION_TIMER_FINISHED);
         registerReceiver(mTimeReceiver, filter);
-        
+
+        if (Util.isDebugMode(this)) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+            .detectAll()
+            .penaltyLog()
+            .penaltyDialog()
+            .build());
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+            .detectAll()
+            .penaltyLog()
+            .penaltyDialog()
+            .build());
+        }
     }
     
     @Override
@@ -121,16 +134,16 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
             if (mTimerService == null) {
                 ssButton.setText(R.string.stop);
                 startService(new Intent(this, TimerService.class));
-            } else if (mTimerService.isStopped() == true) {
+            } else if (!mTimerService.isTimerRunning()) {
                 ssButton.setText(R.string.stop);
                 mTimerService.startService(new Intent(this, TimerService.class));
             } else {
                 ssButton.setText(R.string.start);
-                mTimerService.stop();
+                mTimerService.stopTimer();
             }
         } else if (v.getId() == R.id.finish) {
             if (mTimerService != null) {
-                mTimerService.reset();
+                mTimerService.resetTimer();
             }
             TextView counter = (TextView) findViewById(R.id.counter);
             counter.setText(DateUtils.formatElapsedTime(0));

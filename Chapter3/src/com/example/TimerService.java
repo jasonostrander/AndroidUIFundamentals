@@ -77,18 +77,18 @@ public class TimerService extends Service {
         return mBinder;
     }
 
-    public void stop() {
+    public void stopTimer() {
         mHandler.removeMessages(0);
         stopSelf();
         mNM.cancel(TIMER_NOTIFICATION);
     }
 
-    public boolean isStopped() {
-        return !mHandler.hasMessages(0);
+    public boolean isTimerRunning() {
+        return mHandler.hasMessages(0);
     }
 
-    public void reset() {
-        stop();
+    public void resetTimer() {
+        stopTimer();
         timerStopped(mTime);
         mTime = 0;
     }
