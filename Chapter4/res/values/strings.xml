@@ -7,7 +7,6 @@
     <string name="finish">Finish</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
-    <string name="task_name">Task %1$d</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="clear_all">Clear All</string>
@@ -15,5 +14,10 @@
     <string name="confirm_clear_all_message">If you clear all tasks, you will not be able to restore them.</string>
     <string name="running_timer_notification_title">Timer Running</string>
     <string name="running_timer_notification_message">Current time: %1$s</string>
+    <string name="date_select">Monday Dec 2nd, 2011</string>
+    <string name="task_name">Task Name</string>
+    <string name="project_name">Project Name</string>
+    <string name="description">Description</string>
+    <string name="delete">Delete</string>
 
 </resources>

@@ -1,8 +1,10 @@
 package com.example;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -22,24 +24,30 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class TimeTrackerActivity extends FragmentActivity implements OnClickListener, ServiceConnection {
+public class TimeTrackerActivity extends FragmentActivity implements OnClickListener, ServiceConnection, OnDateSetListener {
     public static final String ACTION_TIME_UPDATE = "ActionTimeUpdate";
     public static final String ACTION_TIMER_FINISHED = "ActionTimerFinished";
     private static final String TAG = "TimeTrackerActivity";
     public static int TIMER_NOTIFICATION = 0;
+    private int DATE_FLAGS = DateUtils.FORMAT_ABBREV_ALL | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE;
 
     private TimeListAdapter mTimeListAdapter = null;
     private TimerService mTimerService = null;
+    private long mDateTime = -1;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.time_entry);
+        
+        // Initialize the fields
+        mDateTime = System.currentTimeMillis();
         
         // Initialize the Timer
         TextView counter = (TextView) findViewById(R.id.counter);
@@ -61,12 +69,18 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
             CharSequence seq = savedInstanceState.getCharSequence("currentTime");
             if (seq != null)
                 counter.setText(seq);
+            
+            mDateTime = savedInstanceState.getLong("dateTime", System.currentTimeMillis());
         }
         
         mTimeListAdapter = new TimeListAdapter(this, 0, values);
         
         ListView list = (ListView) findViewById(R.id.time_list);
-        list.setAdapter(mTimeListAdapter);
+//        list.setAdapter(mTimeListAdapter);
+        
+        Button dateSelect = (Button) findViewById(R.id.date_select);
+        dateSelect.setText(DateUtils.formatDateTime(this, mDateTime, DATE_FLAGS));
+        dateSelect.setOnClickListener(this);
         
         // Register the TimeReceiver
         IntentFilter filter = new IntentFilter();
@@ -148,6 +162,12 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
             TextView counter = (TextView) findViewById(R.id.counter);
             counter.setText(DateUtils.formatElapsedTime(0));
             ssButton.setText(R.string.start);
+        } else if (v.getId() == R.id.date_select) {
+            FragmentManager fm = getSupportFragmentManager();
+            if (fm.findFragmentByTag("dialog") == null) {
+                DatePickerFragment frag = DatePickerFragment.newInstance(this, mDateTime);
+                frag.show(fm, "dialog");
+            }
         }
     }
     
@@ -206,6 +226,16 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
     public void onServiceDisconnected(ComponentName name) {
         Log.i(TAG, "onServiceDisconnected");
         mTimerService = null;
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear,
+            int dayOfMonth) {
+        Button date = (Button) findViewById(R.id.date_select);
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, monthOfYear, dayOfMonth);
+        mDateTime = cal.getTimeInMillis();
+        date.setText(DateUtils.formatDateTime(this, mDateTime, DATE_FLAGS));
     }
 }
 
