@@ -12,18 +12,18 @@
     
 
     <TextView
-        android:id="@+id/lap_name"
+        android:id="@+id/task_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Lap 1" />
+        android:text="@string/sample_task_name" />
 
     <TextView
-        android:id="@+id/lap_time"
+        android:id="@+id/task_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="right"
-        android:text="00:00" />
+        android:text="@string/sample_time" />
 
 </LinearLayout>

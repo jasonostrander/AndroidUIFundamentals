@@ -1,8 +1,6 @@
 package com.example;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.BroadcastReceiver;
@@ -13,19 +11,14 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class TimeTrackerActivity extends FragmentActivity implements OnClickListener, ServiceConnection, OnDateSetListener {
@@ -35,7 +28,6 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
     public static int TIMER_NOTIFICATION = 0;
     private int DATE_FLAGS = DateUtils.FORMAT_ABBREV_ALL | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE;
 
-    private TimeListAdapter mTimeListAdapter = null;
     private TimerService mTimerService = null;
     private long mDateTime = -1;
 
@@ -58,14 +50,15 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
 
         Button finishButton = (Button) findViewById(R.id.finish);
         finishButton.setOnClickListener(this);
+
+        Button deleteButton = (Button) findViewById(R.id.delete);
+        deleteButton.setOnClickListener(this);
+
+        Button dateSelect = (Button) findViewById(R.id.date_select);
+        dateSelect.setText(DateUtils.formatDateTime(this, mDateTime, DATE_FLAGS));
+        dateSelect.setOnClickListener(this);
         
-        List<Long> values = new ArrayList<Long>();
         if (savedInstanceState != null) {
-            long[] arr = savedInstanceState.getLongArray("times");
-            for (long l : arr) {
-                values.add(l);
-            }
-            
             CharSequence seq = savedInstanceState.getCharSequence("currentTime");
             if (seq != null)
                 counter.setText(seq);
@@ -73,50 +66,10 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
             mDateTime = savedInstanceState.getLong("dateTime", System.currentTimeMillis());
         }
         
-        mTimeListAdapter = new TimeListAdapter(this, 0, values);
-        
-        ListView list = (ListView) findViewById(R.id.time_list);
-//        list.setAdapter(mTimeListAdapter);
-        
-        Button dateSelect = (Button) findViewById(R.id.date_select);
-        dateSelect.setText(DateUtils.formatDateTime(this, mDateTime, DATE_FLAGS));
-        dateSelect.setOnClickListener(this);
-        
         // Register the TimeReceiver
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_TIME_UPDATE);
-        filter.addAction(ACTION_TIMER_FINISHED);
         registerReceiver(mTimeReceiver, filter);
-
-        if (Util.isDebugMode(this)) {
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-            .detectAll()
-            .penaltyLog()
-            .penaltyDialog()
-            .build());
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-            .detectAll()
-            .penaltyLog()
-            .penaltyDialog()
-            .build());
-        }
-    }
-    
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        if (mTimeListAdapter != null) {
-            int count = mTimeListAdapter.getCount();
-            long[] arr = new long[count];
-            for (int i = 0; i<count; i++) {
-                arr[i] = mTimeListAdapter.getItem(i);
-            }
-            outState.putLongArray("times", arr);
-        }
-
-        TextView counter = (TextView) findViewById(R.id.counter);
-        if (counter != null)
-            outState.putCharSequence("currentTime", counter.getText());
-        super.onSaveInstanceState(outState);
     }
     
     @Override
@@ -162,6 +115,11 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
             TextView counter = (TextView) findViewById(R.id.counter);
             counter.setText(DateUtils.formatElapsedTime(0));
             ssButton.setText(R.string.start);
+
+            // Finish the time input activity
+            finish();
+        } else if (v.getId() == R.id.delete) {
+            finish();
         } else if (v.getId() == R.id.date_select) {
             FragmentManager fm = getSupportFragmentManager();
             if (fm.findFragmentByTag("dialog") == null) {
@@ -170,30 +128,6 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
             }
         }
     }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-        case R.id.clear_all:
-            //Testing
-            FragmentManager fm = getSupportFragmentManager();
-            if (fm.findFragmentByTag("dialog") == null) {
-                ConfirmClearDialogFragment frag = ConfirmClearDialogFragment.newInstance(mTimeListAdapter);
-                frag.show(fm, "dialog");
-            }
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
-        }
-    }
-    
     
     private void bindTimerService() {
         bindService(new Intent(this, TimerService.class), this, Context.BIND_AUTO_CREATE);
@@ -209,9 +143,6 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
             if (ACTION_TIME_UPDATE.equals(action)) {
                 TextView counter = (TextView) TimeTrackerActivity.this.findViewById(R.id.counter);
                 counter.setText(DateUtils.formatElapsedTime(time/1000));
-            } else if (ACTION_TIMER_FINISHED.equals(action)) {
-                if (mTimeListAdapter != null && time > 0)
-                    mTimeListAdapter.add(time/1000);
             }
         }
     };

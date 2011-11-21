@@ -1,95 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true" >
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/counter"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="50dp" >
+        </TextView>
+
+        <Button
+            android:id="@+id/start_stop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:text="@string/start" />
+            
+        <EditText
+            android:id="@+id/task_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/task_name" >
+        </EditText>
+
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:hint="@string/description" />
+
+        <Button
+            android:id="@+id/date_select"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:text="@string/date_select" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/counter"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="0"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="50dp" >
-            </TextView>
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <Button
-                    android:id="@+id/start_stop"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/start" >
-                </Button>
-
-                <Button
-                    android:id="@+id/finish"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/finish" >
-                </Button>
-            </LinearLayout>
-            
-            <ImageView 
-                android:layout_width="match_parent"
-                android:layout_height="1dp" 
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="10dp"
-                android:src="#FF0000"/>
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
             <Button
-                android:id="@+id/date_select"
-                android:layout_width="match_parent"
+                android:id="@+id/delete"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="@string/date_select" />
+                android:layout_weight="1"
+                android:text="@string/delete" >
+            </Button>
 
-            <EditText
-                android:id="@+id/task_name"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/finish"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/task_name" >
-            </EditText>
-
-            <EditText
-                android:id="@+id/project_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/project_name" />
-
-            <EditText
-                android:id="@+id/description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="3"
-                android:text="@string/description" />
-
+                android:layout_weight="1"
+                android:text="@string/finish" >
+            </Button>
         </LinearLayout>
-    </ScrollView>
+        
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/delete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FF0000"
-        android:text="@string/delete" />
-
-</LinearLayout>
+</ScrollView>

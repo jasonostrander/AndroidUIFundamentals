@@ -19,5 +19,10 @@
     <string name="project_name">Project Name</string>
     <string name="description">Description</string>
     <string name="delete">Delete</string>
+    <string name="new_task">Start New Task</string>
+    <string name="sample_task_name">Task Name</string>
+    <string name="sample_time">00:00</string>
+    <string name="previous_tasks">Previous Tasks</string>
+    <string name="sample_human_readable_time">3hr 42mins</string>
 
 </resources>
