@@ -9,17 +9,17 @@ public class TimeTrackerApplication extends Application {
     public void onCreate() {
         super.onCreate();
         
-//        if (Util.isDebugMode(this)) {
-//            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-//            .detectAll()
-//            .penaltyLog()
-//            .penaltyDialog()
-//            .build());
-//            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-//            .detectAll()
-//            .penaltyLog()
-//            .penaltyDialog()
-//            .build());
-//        }
+        if (Util.isDebugMode(this)) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+            .detectAll()
+            .penaltyLog()
+            .penaltyDialog()
+            .build());
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+            .detectAll()
+            .penaltyLog()
+            .penaltyDialog()
+            .build());
+        }
     }
 }
