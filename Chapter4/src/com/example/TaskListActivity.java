@@ -24,9 +24,6 @@ public class TaskListActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task_list);
         
-        TextView projectName = (TextView) findViewById(R.id.project_name);
-        // set project name here
-        
         Button newTask = (Button) findViewById(R.id.new_task);
         newTask.setOnClickListener(new OnClickListener() {
             

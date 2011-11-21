@@ -15,9 +15,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="10dp"
-            android:text="0"
+            android:text="@string/sample_time"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="50dp" >
+            android:textSize="50sp" >
         </TextView>
 
         <Button
@@ -26,50 +26,39 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:text="@string/start" />
-            
-        <EditText
+
+        <TextView
             android:id="@+id/task_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/task_name" >
-        </EditText>
+            android:layout_marginBottom="20dp"
+            android:text="@string/task_name"
+            android:textSize="20dp" >
+        </TextView>
 
-        <EditText
-            android:id="@+id/description"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:hint="@string/description" />
-
-        <Button
+        <TextView
             android:id="@+id/date_select"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:text="@string/date_select" />
+            android:layout_marginBottom="20dp"
+            android:text="@string/date_select"
+            android:textSize="20dp" />
 
-        <LinearLayout
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="1"
+            android:text="@string/description"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/edit"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/delete"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/delete" >
-            </Button>
-
-            <Button
-                android:id="@+id/finish"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/finish" >
-            </Button>
-        </LinearLayout>
-        
+            android:text="@string/edit" >
+        </Button>
     </LinearLayout>
 
 </ScrollView>

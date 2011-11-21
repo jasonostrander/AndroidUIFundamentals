@@ -5,6 +5,8 @@
     <string name="app_name">TimeTracker</string>
     <string name="elapsed_time_format">%1$d:%2$02d:%3$02d:%4$03d</string>
     <string name="finish">Finish</string>
+    <string name="finished">Finished</string>
+    <string name="edit">Edit</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="ok">OK</string>
@@ -24,5 +26,6 @@
     <string name="sample_time">00:00</string>
     <string name="previous_tasks">Previous Tasks</string>
     <string name="sample_human_readable_time">3hr 42mins</string>
+    <string name="edit_date">Date:</string>
 
 </resources>

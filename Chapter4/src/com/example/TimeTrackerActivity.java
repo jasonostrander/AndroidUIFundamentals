@@ -1,8 +1,6 @@
 package com.example;
 
-import java.util.Calendar;
-
-import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,17 +9,14 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
 
-public class TimeTrackerActivity extends FragmentActivity implements OnClickListener, ServiceConnection, OnDateSetListener {
+public class TimeTrackerActivity extends Activity implements OnClickListener, ServiceConnection {
     public static final String ACTION_TIME_UPDATE = "ActionTimeUpdate";
     public static final String ACTION_TIMER_FINISHED = "ActionTimerFinished";
     private static final String TAG = "TimeTrackerActivity";
@@ -31,7 +26,6 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
     private TimerService mTimerService = null;
     private long mDateTime = -1;
 
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
@@ -48,16 +42,15 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
         Button startButton = (Button) findViewById(R.id.start_stop);
         startButton.setOnClickListener(this);
 
-        Button finishButton = (Button) findViewById(R.id.finish);
-        finishButton.setOnClickListener(this);
+        Button editButton = (Button) findViewById(R.id.edit);
+        editButton.setOnClickListener(this);
 
-        Button deleteButton = (Button) findViewById(R.id.delete);
-        deleteButton.setOnClickListener(this);
+        TextView date = (TextView) findViewById(R.id.date_select);
+        date.setText(DateUtils.formatDateTime(this, mDateTime, DATE_FLAGS));
 
-        Button dateSelect = (Button) findViewById(R.id.date_select);
-        dateSelect.setText(DateUtils.formatDateTime(this, mDateTime, DATE_FLAGS));
-        dateSelect.setOnClickListener(this);
-        
+        TextView description = (TextView) findViewById(R.id.description);
+        description.setText(getResources().getString(R.string.description));
+
         if (savedInstanceState != null) {
             CharSequence seq = savedInstanceState.getCharSequence("currentTime");
             if (seq != null)
@@ -108,24 +101,12 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
                 ssButton.setText(R.string.start);
                 mTimerService.stopTimer();
             }
-        } else if (v.getId() == R.id.finish) {
-            if (mTimerService != null) {
-                mTimerService.resetTimer();
-            }
-            TextView counter = (TextView) findViewById(R.id.counter);
-            counter.setText(DateUtils.formatElapsedTime(0));
-            ssButton.setText(R.string.start);
-
+        } else if (v.getId() == R.id.edit) {
             // Finish the time input activity
-            finish();
+            Intent intent = new Intent(TimeTrackerActivity.this, EditTaskActivity.class);
+            startActivity(intent);
         } else if (v.getId() == R.id.delete) {
             finish();
-        } else if (v.getId() == R.id.date_select) {
-            FragmentManager fm = getSupportFragmentManager();
-            if (fm.findFragmentByTag("dialog") == null) {
-                DatePickerFragment frag = DatePickerFragment.newInstance(this, mDateTime);
-                frag.show(fm, "dialog");
-            }
         }
     }
     
@@ -157,16 +138,6 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
     public void onServiceDisconnected(ComponentName name) {
         Log.i(TAG, "onServiceDisconnected");
         mTimerService = null;
-    }
-
-    @Override
-    public void onDateSet(DatePicker view, int year, int monthOfYear,
-            int dayOfMonth) {
-        Button date = (Button) findViewById(R.id.date_select);
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, monthOfYear, dayOfMonth);
-        mDateTime = cal.getTimeInMillis();
-        date.setText(DateUtils.formatDateTime(this, mDateTime, DATE_FLAGS));
     }
 }
 
