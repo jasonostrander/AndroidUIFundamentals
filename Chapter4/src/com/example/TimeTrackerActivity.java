@@ -30,7 +30,7 @@ public class TimeTrackerActivity extends Activity implements OnClickListener, Se
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.time_entry);
+        setContentView(R.layout.task_detail);
         
         // Initialize the fields
         mDateTime = System.currentTimeMillis();
