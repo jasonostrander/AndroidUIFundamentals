@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/counter"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_row="0"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="50dp" >
+            </TextView>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_row="1"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/start_stop"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/start" >
+                </Button>
+
+                <Button
+                    android:id="@+id/finish"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/finish" >
+                </Button>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/date_select"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_row="2"
+                android:text="@string/date_select" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_column="0"
+                android:layout_gravity="right"
+                android:layout_row="4"
+                android:text="TextView" />
+
+            <EditText
+                android:id="@+id/project_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_row="5"
+                android:text="@string/project_name" />
+
+            <EditText
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_row="6"
+                android:lines="3"
+                android:text="@string/description" />
+
+            <EditText
+                android:id="@+id/task_name"
+                android:layout_width="177dp"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_row="3"
+                android:layout_rowSpan="2"
+                android:text="@string/task_name" >
+
+                <requestFocus />
+            </EditText>
+
+            <Space
+                android:layout_width="108dp"
+                android:layout_height="1dp"
+                android:layout_column="0"
+                android:layout_row="0" />
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="23dp"
+                android:layout_column="0"
+                android:layout_row="3" />
+        </GridLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        android:background="#FF0000" />
+
+</LinearLayout>
