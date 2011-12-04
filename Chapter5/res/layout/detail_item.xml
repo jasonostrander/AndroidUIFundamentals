@@ -14,7 +14,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Name:" />
+        android:text="@string/detail_name" />
 
     <TextView
         android:id="@+id/text"
