@@ -1,6 +1,5 @@
 package com.example;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,55 +8,27 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.FragmentActivity;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.TextView;
 
-public class TimeTrackerActivity extends Activity implements OnClickListener, ServiceConnection {
+public class TimeTrackerActivity extends FragmentActivity implements OnClickListener, ServiceConnection {
     public static final String ACTION_TIME_UPDATE = "ActionTimeUpdate";
     public static final String ACTION_TIMER_FINISHED = "ActionTimerFinished";
     private static final String TAG = "TimeTrackerActivity";
     public static int TIMER_NOTIFICATION = 0;
-    private int DATE_FLAGS = DateUtils.FORMAT_ABBREV_ALL | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE;
+    public static int DATE_FLAGS = DateUtils.FORMAT_ABBREV_ALL | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE;
 
     private TimerService mTimerService = null;
-    private long mDateTime = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.task_detail);
-        
-        // Initialize the fields
-        mDateTime = System.currentTimeMillis();
-        
-        // Initialize the Timer
-        TextView counter = (TextView) findViewById(R.id.counter);
-        counter.setText(DateUtils.formatElapsedTime(0));
-
-        Button startButton = (Button) findViewById(R.id.start_stop);
-        startButton.setOnClickListener(this);
-
-        Button editButton = (Button) findViewById(R.id.edit);
-        editButton.setOnClickListener(this);
-
-        TextView date = (TextView) findViewById(R.id.date_select);
-        date.setText(DateUtils.formatDateTime(this, mDateTime, DATE_FLAGS));
-
-        TextView description = (TextView) findViewById(R.id.description);
-        description.setText(getResources().getString(R.string.description));
-
-        if (savedInstanceState != null) {
-            CharSequence seq = savedInstanceState.getCharSequence("currentTime");
-            if (seq != null)
-                counter.setText(seq);
-            
-            mDateTime = savedInstanceState.getLong("dateTime", System.currentTimeMillis());
-        }
+        setContentView(R.layout.main);
         
         // Register the TimeReceiver
         IntentFilter filter = new IntentFilter();

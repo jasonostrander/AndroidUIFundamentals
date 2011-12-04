@@ -39,7 +39,8 @@
             android:id="@+id/finish"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/finished" >
+            android:text="@string/finished"
+            style="@style/custom_button" >
         </Button>
     </LinearLayout>
 
