@@ -15,7 +15,7 @@ public class TimerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.task_detail, container);
+        return inflater.inflate(R.layout.task_detail, null);
     }
 
     

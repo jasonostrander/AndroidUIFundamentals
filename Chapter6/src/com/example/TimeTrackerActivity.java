@@ -9,6 +9,8 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +32,10 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        FragmentManager fm = getSupportFragmentManager();
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(new PagerAdapter(fm));
+
         // Register the TimeReceiver
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_TIME_UPDATE);
