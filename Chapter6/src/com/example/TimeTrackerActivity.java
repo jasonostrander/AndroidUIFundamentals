@@ -146,7 +146,8 @@ public class TimeTrackerActivity extends FragmentActivity
 
             if (ACTION_TIME_UPDATE.equals(action)) {
                 TextView counter = (TextView) TimeTrackerActivity.this.findViewById(R.id.counter);
-                counter.setText(DateUtils.formatElapsedTime(time/1000));
+                if (counter != null)
+                    counter.setText(DateUtils.formatElapsedTime(time/1000));
             }
         }
     };
