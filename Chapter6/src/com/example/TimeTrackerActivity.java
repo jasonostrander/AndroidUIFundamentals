@@ -1,11 +1,13 @@
 package com.example;
 
+import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
@@ -14,10 +16,14 @@ import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewParent;
 import android.view.View.OnClickListener;
+import android.widget.TabHost;
 import android.widget.TextView;
 
-public class TimeTrackerActivity extends FragmentActivity implements OnClickListener, ServiceConnection {
+public class TimeTrackerActivity extends FragmentActivity 
+        implements OnClickListener, ServiceConnection, ViewPager.OnPageChangeListener {
+    
     public static final String ACTION_TIME_UPDATE = "ActionTimeUpdate";
     public static final String ACTION_TIMER_FINISHED = "ActionTimerFinished";
     private static final String TAG = "TimeTrackerActivity";
@@ -25,16 +31,56 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
     public static int DATE_FLAGS = DateUtils.FORMAT_ABBREV_ALL | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE;
 
     private TimerService mTimerService = null;
+    private TabHost mTabHost;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
         
         FragmentManager fm = getSupportFragmentManager();
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new PagerAdapter(fm));
+        pager.setOnPageChangeListener(this);
+        
+        // add tabs. Use ActionBar for 3.0 and above, otherwise use TabWidget
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            final ActionBar bar = getActionBar();
+            bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+            bar.addTab(bar.newTab()
+                    .setText("Timer")
+                    .setTabListener(new ABTabListener(pager)));
+            bar.addTab(bar.newTab()
+                    .setText("Tasks")
+                    .setTabListener(new ABTabListener(pager)));
+            bar.addTab(bar.newTab()
+                    .setText("Export")
+                    .setTabListener(new ABTabListener(pager)));
+        } else {
+            // Use TabWidget instead
+            mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+            mTabHost.setup();
+            mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+                @Override
+                public void onTabChanged(String tabId) {
+                    if ("timer".equals(tabId)) {
+                        pager.setCurrentItem(0);
+                    } else if ("tasks".equals(tabId)) {
+                        pager.setCurrentItem(1);
+                    } else if ("export".equals(tabId)) {
+                        pager.setCurrentItem(2);
+                    }
+                }
+            });
+
+            mTabHost.addTab(mTabHost.newTabSpec("timer").setIndicator("Timer").setContent(new DummyTabFactory(this)));
+            mTabHost.addTab(mTabHost.newTabSpec("tasks").setIndicator("Tasks").setContent(new DummyTabFactory(this)));
+            mTabHost.addTab(mTabHost.newTabSpec("export").setIndicator("Export").setContent(new DummyTabFactory(this)));
+
+        }
 
         // Register the TimeReceiver
         IntentFilter filter = new IntentFilter();
@@ -115,6 +161,24 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
     public void onServiceDisconnected(ComponentName name) {
         Log.i(TAG, "onServiceDisconnected");
         mTimerService = null;
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int arg0) {
+    }
+
+    @Override
+    public void onPageScrolled(int arg0, float arg1, int arg2) {
+    }
+
+    @Override
+    public void onPageSelected(int index) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            final ActionBar bar = getActionBar();
+            bar.setSelectedNavigationItem(index);
+        } else {
+            mTabHost.setCurrentTab(index);
+        }
     }
 }
 
