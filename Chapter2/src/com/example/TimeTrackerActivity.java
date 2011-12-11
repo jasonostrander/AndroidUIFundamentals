@@ -111,7 +111,7 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
             TextView counter = (TextView) TimeTrackerActivity.this.findViewById(R.id.counter);
             counter.setText(DateUtils.formatElapsedTime(mTime/1000));
 
-            mHandler.sendEmptyMessageDelayed(0, 100);
+            mHandler.sendEmptyMessageDelayed(0, 250);
         };
     };
 }

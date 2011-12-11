@@ -42,7 +42,7 @@ public class TaskListActivity extends FragmentActivity {
             }
         }
         
-        mTimeListAdapter = new TimeListAdapter(this, 0, values);
+//        mTimeListAdapter = new TimeListAdapter(this, 0, values);
 //        setListAdapter(mTimeListAdapter);
     }
 
@@ -52,7 +52,7 @@ public class TaskListActivity extends FragmentActivity {
             int count = mTimeListAdapter.getCount();
             long[] arr = new long[count];
             for (int i = 0; i<count; i++) {
-                arr[i] = mTimeListAdapter.getItem(i);
+//                arr[i] = mTimeListAdapter.getItem(i);
             }
             outState.putLongArray("times", arr);
         }

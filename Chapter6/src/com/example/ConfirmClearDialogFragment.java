@@ -30,7 +30,7 @@ public class ConfirmClearDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                mAdapter.clear();
+//                mAdapter.clear();
             }
         })
         .setNegativeButton(R.string.cancel, null)

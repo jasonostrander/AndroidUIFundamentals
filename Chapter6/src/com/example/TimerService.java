@@ -37,7 +37,7 @@ public class TimerService extends Service {
             
             updateTime(mTime);
             
-            mHandler.sendEmptyMessageDelayed(0, 100);
+            mHandler.sendEmptyMessageDelayed(0, 250);
         };
     };
 

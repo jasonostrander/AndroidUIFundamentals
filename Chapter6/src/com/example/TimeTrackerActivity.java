@@ -1,5 +1,7 @@
 package com.example;
 
+import com.example.TaskListFragment.TaskListener;
+
 import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -7,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,7 +25,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 public class TimeTrackerActivity extends FragmentActivity 
-        implements OnClickListener, ServiceConnection, ViewPager.OnPageChangeListener {
+        implements OnClickListener, ServiceConnection, ViewPager.OnPageChangeListener, TaskListener {
     
     public static final String ACTION_TIME_UPDATE = "ActionTimeUpdate";
     public static final String ACTION_TIMER_FINISHED = "ActionTimerFinished";
@@ -32,6 +35,7 @@ public class TimeTrackerActivity extends FragmentActivity
 
     private TimerService mTimerService = null;
     private TabHost mTabHost;
+    private ViewPager mPager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,9 +45,9 @@ public class TimeTrackerActivity extends FragmentActivity
 
         
         FragmentManager fm = getSupportFragmentManager();
-        final ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new PagerAdapter(fm));
-        pager.setOnPageChangeListener(this);
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager.setAdapter(new PagerAdapter(fm));
+        mPager.setOnPageChangeListener(this);
         
         // add tabs. Use ActionBar for 3.0 and above, otherwise use TabWidget
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -52,13 +56,13 @@ public class TimeTrackerActivity extends FragmentActivity
 
             bar.addTab(bar.newTab()
                     .setText("Timer")
-                    .setTabListener(new ABTabListener(pager)));
+                    .setTabListener(new ABTabListener(mPager)));
             bar.addTab(bar.newTab()
                     .setText("Tasks")
-                    .setTabListener(new ABTabListener(pager)));
+                    .setTabListener(new ABTabListener(mPager)));
             bar.addTab(bar.newTab()
                     .setText("Export")
-                    .setTabListener(new ABTabListener(pager)));
+                    .setTabListener(new ABTabListener(mPager)));
         } else {
             // Use TabWidget instead
             mTabHost = (TabHost) findViewById(android.R.id.tabhost);
@@ -67,11 +71,11 @@ public class TimeTrackerActivity extends FragmentActivity
                 @Override
                 public void onTabChanged(String tabId) {
                     if ("timer".equals(tabId)) {
-                        pager.setCurrentItem(0);
+                        mPager.setCurrentItem(0);
                     } else if ("tasks".equals(tabId)) {
-                        pager.setCurrentItem(1);
+                        mPager.setCurrentItem(1);
                     } else if ("export".equals(tabId)) {
-                        pager.setCurrentItem(2);
+                        mPager.setCurrentItem(2);
                     }
                 }
             });
@@ -127,10 +131,17 @@ public class TimeTrackerActivity extends FragmentActivity
         } else if (v.getId() == R.id.edit) {
             // Finish the time input activity
             Intent intent = new Intent(TimeTrackerActivity.this, EditTaskActivity.class);
+            intent.putExtra(EditTaskActivity.TASK_ID, mTaskId);
             startActivity(intent);
         } else if (v.getId() == R.id.delete) {
             finish();
+        } else if (v.getId() == R.id.new_task) {
+            startNewTimerTask();
         }
+    }
+    
+    private void startNewTimerTask() {
+        mPager.setCurrentItem(0);
     }
     
     private void bindTimerService() {
@@ -180,6 +191,11 @@ public class TimeTrackerActivity extends FragmentActivity
         } else {
             mTabHost.setCurrentTab(index);
         }
+    }
+
+    @Override
+    public void onTaskSelected(Uri uri) {
+        mPager.setCurrentItem(0);
     }
 }
 

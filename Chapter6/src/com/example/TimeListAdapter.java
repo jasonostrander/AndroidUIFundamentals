@@ -1,37 +1,44 @@
 package com.example;
 
-import java.util.List;
-
 import android.content.Context;
-import android.text.format.DateUtils;
+import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class TimeListAdapter extends ArrayAdapter<Long> {
-    
-    public TimeListAdapter(Context context, int textViewResourceId, List<Long> list) {
-        super(context, textViewResourceId, list);
+import com.example.provider.TaskProvider;
+
+public class TimeListAdapter extends CursorAdapter {
+
+    public TimeListAdapter(Context context, Cursor c, int flags) {
+        super(context, c, flags);
+    }
+
+    private static class ViewHolder {
+        int nameIndex;
+        int timeIndex;
+        TextView name;
+        TextView time;
     }
     
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-        if (view == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.time_row, null);
-        }
-        
-        long time = getItem(position);
-        
-        TextView name = (TextView) view.findViewById(R.id.task_name);
-        String taskString = getContext().getResources().getString(R.string.task_name);
-        name.setText(String.format(taskString, position+1));
-        
-        TextView lapTime = (TextView) view.findViewById(R.id.task_time);
-        lapTime.setText(DateUtils.formatElapsedTime(time));
-        
+    public void bindView(View view, Context context, Cursor cursor) {
+        ViewHolder holder = (ViewHolder) view.getTag();
+        holder.name.setText(cursor.getString(holder.nameIndex));
+        holder.time.setText(cursor.getString(holder.timeIndex));
+    }
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View view = LayoutInflater.from(context).inflate(R.layout.time_row, null);
+        ViewHolder holder = new ViewHolder();
+        holder.name = (TextView) view.findViewById(R.id.task_name);
+        holder.time = (TextView) view.findViewById(R.id.task_time);
+        holder.nameIndex = cursor.getColumnIndexOrThrow(TaskProvider.Task.NAME);
+        holder.timeIndex = cursor.getColumnIndexOrThrow(TaskProvider.Task.DATE);
+        view.setTag(holder);
         return view;
     }
 }
