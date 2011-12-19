@@ -23,7 +23,7 @@ public class TaskListFragment extends ListFragment implements LoaderCallbacks<Cu
     TaskListener mListener;
     
     public static interface TaskListener {
-        public void onTaskSelected(Uri uri);
+        public void onTaskSelected(long id, String name, String desc, long date, int time);
     }
     
     @Override
@@ -53,7 +53,12 @@ public class TaskListFragment extends ListFragment implements LoaderCallbacks<Cu
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+        Cursor cursor = mAdapter.getCursor();
+        cursor.moveToPosition(position);
+        String name = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.NAME));
+        String desc = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.DESCRIPTION));
+        int time = cursor.getInt(cursor.getColumnIndexOrThrow(TaskProvider.Task.TIME));
+        mListener.onTaskSelected(id, name, desc, 0, time);
     }
     
     @Override

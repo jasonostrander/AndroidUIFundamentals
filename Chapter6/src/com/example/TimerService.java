@@ -10,6 +10,7 @@ import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
@@ -155,6 +156,12 @@ public class TimerService extends Service {
     
     public Long getTaskId() {
         return this.mTaskId;
+    }
+    
+    public void setTask(long id, long time) {
+        resetTimer();
+        mTaskId = id;
+        mTime = time;
     }
     
     private void createNewTask() {

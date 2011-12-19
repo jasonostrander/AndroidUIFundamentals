@@ -208,9 +208,15 @@ public class TimeTrackerActivity extends FragmentActivity
     }
 
     @Override
-    public void onTaskSelected(Uri uri) {
+    public void onTaskSelected(long id, String name, String desc, long date, int time) {
         mPager.setCurrentItem(0);
+        TextView nameView = (TextView) findViewById(R.id.task_name).findViewById(R.id.text);
+        TextView descView = (TextView) findViewById(R.id.task_desc).findViewById(R.id.text);
+        TextView counter = (TextView) findViewById(R.id.counter);
+        nameView.setText(name);
+        descView.setText(desc);
+        counter.setText(DateUtils.formatElapsedTime(time/1000));
+        mTimerService.setTask(id, time);
     }
-
 }
 
