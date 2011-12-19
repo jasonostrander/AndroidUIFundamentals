@@ -3,6 +3,8 @@ package com.example;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +28,10 @@ public class TimeListAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder holder = (ViewHolder) view.getTag();
+        Log.v("jason", "name = " + cursor.getString(holder.nameIndex));
         holder.name.setText(cursor.getString(holder.nameIndex));
-        holder.time.setText(cursor.getString(holder.timeIndex));
+        long time = cursor.getLong(holder.timeIndex);
+        holder.time.setText(DateUtils.formatElapsedTime(time/1000));
     }
 
     @Override
@@ -37,7 +41,7 @@ public class TimeListAdapter extends CursorAdapter {
         holder.name = (TextView) view.findViewById(R.id.task_name);
         holder.time = (TextView) view.findViewById(R.id.task_time);
         holder.nameIndex = cursor.getColumnIndexOrThrow(TaskProvider.Task.NAME);
-        holder.timeIndex = cursor.getColumnIndexOrThrow(TaskProvider.Task.DATE);
+        holder.timeIndex = cursor.getColumnIndexOrThrow(TaskProvider.Task.TIME);
         view.setTag(holder);
         return view;
     }

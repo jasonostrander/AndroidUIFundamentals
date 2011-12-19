@@ -16,17 +16,37 @@ import android.widget.TextView;
 
 import com.example.provider.TaskProvider;
 
-public class TimerFragment extends Fragment implements LoaderCallbacks<Cursor> {
+public class TimerFragment extends Fragment {
 
-    long mTaskId = -1;
+    private long mDate;
     
-    public void setTaskId(long id) {
-        mTaskId = id;
-        getLoaderManager().restartLoader(0, null, this);
+    private TextView mCounter;
+    private TextView mName;
+    private TextView mDescription;
+    
+    public void setName(String name) {
+        setDescAndText(R.id.task_name, R.string.detail_name, name); 
     }
     
-    public long getTaskId() {
-        return mTaskId;
+    public String getName() {
+        return (String) mName.getText();
+    }
+    
+    public void setDate(long date) {
+        mDate = date;
+        setDescAndText(R.id.task_date, R.string.detail_date, Long.toString(date));
+    }
+    
+    public long getDate() {
+        return mDate;
+    }
+    
+    public void setDescription(String description) {
+        setDescAndText(R.id.task_desc, R.string.detail_desc, description);
+    }
+    
+    public String getDescription() {
+        return (String) mDescription.getText();
     }
     
     @Override
@@ -36,13 +56,14 @@ public class TimerFragment extends Fragment implements LoaderCallbacks<Cursor> {
     }
 
     
-    private void setDescAndText(int id, int desc, String value) {
+    private TextView setDescAndText(int id, int desc, String value) {
         View v = getActivity().findViewById(id);
         TextView name = (TextView) v.findViewById(R.id.name);
         TextView text = (TextView) v.findViewById(R.id.text);
         String s = getResources().getString(desc);
         name.setText(s);
         text.setText(value);
+        return text;
     }
 
     @Override
@@ -52,8 +73,8 @@ public class TimerFragment extends Fragment implements LoaderCallbacks<Cursor> {
         TimeTrackerActivity activity = (TimeTrackerActivity) getActivity();
         
         // Initialize the Timer
-        TextView counter = (TextView) activity.findViewById(R.id.counter);
-        counter.setText(DateUtils.formatElapsedTime(0));
+        mCounter = (TextView) activity.findViewById(R.id.counter);
+        mCounter.setText(DateUtils.formatElapsedTime(0));
 
         Button startButton = (Button) activity.findViewById(R.id.start_stop);
         startButton.setOnClickListener(activity);
@@ -61,18 +82,19 @@ public class TimerFragment extends Fragment implements LoaderCallbacks<Cursor> {
         Button editButton = (Button) activity.findViewById(R.id.edit);
         editButton.setOnClickListener(activity);
 
+        mName = setDescAndText(R.id.task_name, R.string.detail_name, "test");
+        mDescription = setDescAndText(R.id.task_name, R.string.detail_name, "testing");
+        
         long date = System.currentTimeMillis();
         if (savedInstanceState != null) {
             CharSequence seq = savedInstanceState.getCharSequence("currentTime");
             if (seq != null)
-                counter.setText(seq);
+                mCounter.setText(seq);
             
             date = savedInstanceState.getLong("dateTime", System.currentTimeMillis());
         }
 
         setupTextViews(null);
-        
-        getLoaderManager().initLoader(0, null, this);
     }
 
     private void setupTextViews(Cursor cursor) {
@@ -91,29 +113,5 @@ public class TimerFragment extends Fragment implements LoaderCallbacks<Cursor> {
         setDescAndText(R.id.task_name, R.string.detail_name, name); 
         setDescAndText(R.id.task_date, R.string.detail_date, date);
         setDescAndText(R.id.task_desc, R.string.detail_desc, desc);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri uri = TaskProvider.CONTENT_URI_WITH_TASK;
-        String[] projection = new String[] {
-                TaskProvider.Task.NAME,
-                TaskProvider.Task.DATE,
-                TaskProvider.Task.DESCRIPTION
-                };
-        String selection = TaskProvider.Task._ID + " = ?";
-        String[] selectionArgs = new String[] {Long.toString(mTaskId)};
-        return new CursorLoader(getActivity(), uri, projection, selection, selectionArgs, null);
-    }
-
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        setupTextViews(cursor);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        setupTextViews(null);
     }
 }

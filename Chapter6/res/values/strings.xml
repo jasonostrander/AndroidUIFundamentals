@@ -30,6 +30,8 @@
     <string name="detail_date">Date:</string>
     <string name="detail_name">Name:</string>
     <string name="detail_desc">Description:</string>
+    <string name="timer">Timer</string>
+    <string name="tasks">Tasks</string>
 
             <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec purus felis. In hac habitasse platea dictumst. Morbi arcu mauris, hendrerit ut ultrices in, auctor id odio. Aliquam vitae facilisis sapien. Donec commodo egestas leo nec luctus. Sed pulvinar justo nec purus pulvinar ut interdum lectus condimentum. Suspendisse commodo tincidunt elit, sit amet porttitor dui pellentesque at. Nunc ut purus ut elit laoreet vehicula a eu velit. Sed vestibulum molestie lacus, malesuada lacinia orci hendrerit a. Nulla et sem dictum diam rhoncus laoreet.
 

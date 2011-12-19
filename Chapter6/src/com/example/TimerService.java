@@ -139,4 +139,8 @@ public class TimerService extends Service {
         // Now update the notification
         updateNotification(time);
     }
+    
+    public long getTime() {
+        return mTime;
+    }
 }

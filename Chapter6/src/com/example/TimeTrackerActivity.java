@@ -1,31 +1,38 @@
 package com.example;
 
-import com.example.TaskListFragment.TaskListener;
-
 import android.app.ActionBar;
+import android.content.AsyncQueryHandler;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewParent;
 import android.view.View.OnClickListener;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.example.TaskListFragment.TaskListener;
+import com.example.provider.TaskProvider;
+
 public class TimeTrackerActivity extends FragmentActivity 
-        implements OnClickListener, ServiceConnection, ViewPager.OnPageChangeListener, TaskListener {
+        implements OnClickListener, ServiceConnection, 
+        ViewPager.OnPageChangeListener, TaskListener {
     
     public static final String ACTION_TIME_UPDATE = "ActionTimeUpdate";
     public static final String ACTION_TIMER_FINISHED = "ActionTimerFinished";
@@ -36,6 +43,7 @@ public class TimeTrackerActivity extends FragmentActivity
     private TimerService mTimerService = null;
     private TabHost mTabHost;
     private ViewPager mPager;
+    private PagerAdapter mPagerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +54,8 @@ public class TimeTrackerActivity extends FragmentActivity
         
         FragmentManager fm = getSupportFragmentManager();
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setAdapter(new PagerAdapter(fm));
+        mPagerAdapter = new PagerAdapter(fm);
+        mPager.setAdapter(mPagerAdapter);
         mPager.setOnPageChangeListener(this);
         
         // add tabs. Use ActionBar for 3.0 and above, otherwise use TabWidget
@@ -55,13 +64,10 @@ public class TimeTrackerActivity extends FragmentActivity
             bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
             bar.addTab(bar.newTab()
-                    .setText("Timer")
+                    .setText(R.string.timer)
                     .setTabListener(new ABTabListener(mPager)));
             bar.addTab(bar.newTab()
-                    .setText("Tasks")
-                    .setTabListener(new ABTabListener(mPager)));
-            bar.addTab(bar.newTab()
-                    .setText("Export")
+                    .setText(R.string.tasks)
                     .setTabListener(new ABTabListener(mPager)));
         } else {
             // Use TabWidget instead
@@ -74,16 +80,14 @@ public class TimeTrackerActivity extends FragmentActivity
                         mPager.setCurrentItem(0);
                     } else if ("tasks".equals(tabId)) {
                         mPager.setCurrentItem(1);
-                    } else if ("export".equals(tabId)) {
-                        mPager.setCurrentItem(2);
                     }
                 }
             });
 
-            mTabHost.addTab(mTabHost.newTabSpec("timer").setIndicator("Timer").setContent(new DummyTabFactory(this)));
-            mTabHost.addTab(mTabHost.newTabSpec("tasks").setIndicator("Tasks").setContent(new DummyTabFactory(this)));
-            mTabHost.addTab(mTabHost.newTabSpec("export").setIndicator("Export").setContent(new DummyTabFactory(this)));
-
+            String timer = getResources().getString(R.string.timer);
+            mTabHost.addTab(mTabHost.newTabSpec("timer").setIndicator(timer).setContent(new DummyTabFactory(this)));
+            String tasks = getResources().getString(R.string.tasks);
+            mTabHost.addTab(mTabHost.newTabSpec("tasks").setIndicator(tasks).setContent(new DummyTabFactory(this)));
         }
 
         // Register the TimeReceiver
@@ -99,6 +103,11 @@ public class TimeTrackerActivity extends FragmentActivity
 
         // Bind to the TimerService
         bindTimerService();
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
     
     @Override
@@ -127,11 +136,12 @@ public class TimeTrackerActivity extends FragmentActivity
             } else {
                 ssButton.setText(R.string.start);
                 mTimerService.stopTimer();
+                saveNewTask();
             }
         } else if (v.getId() == R.id.edit) {
             // Finish the time input activity
             Intent intent = new Intent(TimeTrackerActivity.this, EditTaskActivity.class);
-            intent.putExtra(EditTaskActivity.TASK_ID, mTaskId);
+//            intent.putExtra(EditTaskActivity.TASK_ID, mTaskId);
             startActivity(intent);
         } else if (v.getId() == R.id.delete) {
             finish();
@@ -196,6 +206,22 @@ public class TimeTrackerActivity extends FragmentActivity
     @Override
     public void onTaskSelected(Uri uri) {
         mPager.setCurrentItem(0);
+    }
+
+    private void saveNewTask() {
+        AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+        };
+
+        TimerFragment tf = mPagerAdapter.mTimerFragment;
+        Uri uri = TaskProvider.CONTENT_URI;
+        ContentValues cv = new ContentValues();
+        cv.put(TaskProvider.Task.NAME, tf.getName());
+        cv.put(TaskProvider.Task.DATE, tf.getDate());
+        cv.put(TaskProvider.Task.DESCRIPTION, tf.getDescription());
+        cv.put(TaskProvider.Task.ACTIVE, true);
+        cv.put(TaskProvider.Task.TIME, mTimerService.getTime());
+
+        handler.startInsert(0, null, uri, cv);
     }
 }
 

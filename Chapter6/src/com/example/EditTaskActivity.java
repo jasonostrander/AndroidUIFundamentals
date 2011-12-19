@@ -16,7 +16,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class EditTaskActivity extends FragmentActivity implements OnClickListener, LoaderCallbacks<Cursor> {
+public class EditTaskActivity extends FragmentActivity implements OnClickListener {
 
     public static final String TASK_ID = "TaskId";
     private long mTaskId;
@@ -38,8 +38,6 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
         
         mName = (EditText) findViewById(R.id.name);
         mDescription = (EditText) findViewById(R.id.description);
-        
-        getSupportLoaderManager().initLoader(0, null, this);
     }
     
     @Override
@@ -53,7 +51,7 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
         ContentValues cv = new ContentValues();
         cv.put(TaskProvider.Task.NAME, mName.getText().toString());
         cv.put(TaskProvider.Task.DESCRIPTION, mDescription.getText().toString());
-        mQueryHandler.startUpdate(0, null, uri, cv, selection, selectionArgs);
+        getContentResolver().update(uri, cv, selection, selectionArgs);
     }
 
     @Override
@@ -62,32 +60,4 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
             finish();
         }
     }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-        Uri uri = TaskProvider.CONTENT_URI_WITH_TASK;
-        String[] projection = new String[] {
-                TaskProvider.Task.NAME,
-                TaskProvider.Task.DATE,
-                TaskProvider.Task.DESCRIPTION
-                };
-        String selection = TaskProvider.Task._ID + " = ?";
-        String[] selectionArgs = new String[] {Long.toString(mTaskId)};
-        return new CursorLoader(this, uri, projection, selection, selectionArgs, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        int nameIndex = cursor.getColumnIndexOrThrow(TaskProvider.Task.NAME);
-        int descIndex = cursor.getColumnIndexOrThrow(TaskProvider.Task.DESCRIPTION);
-        mName.setText(cursor.getString(nameIndex));
-        mDescription.setText(cursor.getString(descIndex));
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> arg0) {
-    }
-    
-    private AsyncQueryHandler mQueryHandler = new AsyncQueryHandler(getContentResolver()) {
-    };
 }

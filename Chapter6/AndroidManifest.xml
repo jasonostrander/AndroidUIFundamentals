@@ -34,6 +34,11 @@
             android:windowSoftInputMode="stateUnchanged" >
         </activity>
 
+        <provider
+            android:authorities="com.example.TimeTracker"
+            android:name="com.example.provider.TaskProvider" >
+        </provider>
+
         <service android:name="TimerService" />
     </application>
 

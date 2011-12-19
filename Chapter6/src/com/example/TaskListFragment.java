@@ -10,6 +10,7 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class TaskListFragment extends ListFragment implements LoaderCallbacks<Cu
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mListener = (TaskListener) activity;
+        mAdapter = new TimeListAdapter(activity, null, 0);
     }
     
     @Override
@@ -45,34 +47,29 @@ public class TaskListFragment extends ListFragment implements LoaderCallbacks<Cu
         Button button = (Button) activity.findViewById(R.id.new_task);
         button.setOnClickListener(activity);
         
-        mAdapter = new TimeListAdapter(activity, null, 0);
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+    }
+    
+    @Override
+    public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
         Uri uri = TaskProvider.CONTENT_URI;
-        String[] projection = new String[] {
-                TaskProvider.Task.NAME,
-                TaskProvider.Task.DATE,
-                };
-        return new CursorLoader(getActivity(), uri, projection, null, null, null);
+        return new CursorLoader(getActivity(), uri, null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        Log.v("jason", "onLoadFinished: " + cursor.getCount());
         mAdapter.swapCursor(cursor);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<Cursor> laoder) {
         mAdapter.swapCursor(null);
-    }
-    
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        
     }
 }

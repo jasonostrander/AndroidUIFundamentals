@@ -5,21 +5,23 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 public class PagerAdapter extends FragmentPagerAdapter {
-    public static final int PAGE_COUNT = 3;
-
+    public static final int PAGE_COUNT = 2;
+    TimerFragment mTimerFragment;
+    TaskListFragment mTaskListFragment;
+    
     public PagerAdapter(FragmentManager fm) {
         super(fm);
+        mTimerFragment = new TimerFragment();
+        mTaskListFragment = new TaskListFragment();
     }
 
     @Override
     public Fragment getItem(int arg0) {
         switch(arg0) {
         case 0:
-            return new TimerFragment();
+            return mTimerFragment;
         case 1:
-            return new TaskListFragment();
-        case 2:
-            return new ExportFragment();
+            return mTaskListFragment;
         }
         return null;
     }
