@@ -140,17 +140,22 @@ public class TimeTrackerActivity extends FragmentActivity
         } else if (v.getId() == R.id.edit) {
             // Finish the time input activity
             Intent intent = new Intent(TimeTrackerActivity.this, EditTaskActivity.class);
-//            intent.putExtra(EditTaskActivity.TASK_ID, mTaskId);
+            intent.putExtra(EditTaskActivity.TASK_ID, mTimerService.getTaskId());
             startActivity(intent);
         } else if (v.getId() == R.id.delete) {
             finish();
         } else if (v.getId() == R.id.new_task) {
             startNewTimerTask();
+            ssButton.setText(R.string.start);
+            TextView counter = (TextView) findViewById(R.id.counter);
+            counter.setText(DateUtils.formatElapsedTime(0));
         }
     }
     
     private void startNewTimerTask() {
         mPager.setCurrentItem(0);
+        mTimerService.resetTimer();
+        
     }
     
     private void bindTimerService() {

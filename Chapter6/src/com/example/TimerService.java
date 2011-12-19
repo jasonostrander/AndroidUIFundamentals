@@ -153,6 +153,10 @@ public class TimerService extends Service {
         updateNotification(time);
     }
     
+    public Long getTaskId() {
+        return this.mTaskId;
+    }
+    
     private void createNewTask() {
         AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
             @Override

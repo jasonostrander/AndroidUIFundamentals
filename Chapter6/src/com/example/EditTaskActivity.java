@@ -1,20 +1,18 @@
 package com.example;
 
-import com.example.provider.TaskProvider;
-
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
-import android.database.Cursor;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+
+import com.example.provider.TaskProvider;
 
 public class EditTaskActivity extends FragmentActivity implements OnClickListener {
 
@@ -22,15 +20,17 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
     private long mTaskId;
     private EditText mName;
     private EditText mDescription;
-    private long mDate;
+    private DatePicker mDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_task);
         
-        if (savedInstanceState != null) {
-            mTaskId = savedInstanceState.getLong(TASK_ID);
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            mTaskId = extras.getLong(TASK_ID);
         }
         
         Button finish = (Button) findViewById(R.id.finish);
@@ -38,6 +38,7 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
         
         mName = (EditText) findViewById(R.id.name);
         mDescription = (EditText) findViewById(R.id.description);
+        mDate = (DatePicker) findViewById(R.id.date);
     }
     
     @Override
@@ -45,13 +46,16 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
         super.onPause();
         
         // Save newly entered data to the database
-        Uri uri = TaskProvider.getContentUriWithTask(mTaskId);
+        AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+        };
+
+        Uri uri = TaskProvider.getContentUri();
         String selection = TaskProvider.Task._ID + " = ?";
         String[] selectionArgs = new String[] {Long.toString(mTaskId)};
         ContentValues cv = new ContentValues();
         cv.put(TaskProvider.Task.NAME, mName.getText().toString());
         cv.put(TaskProvider.Task.DESCRIPTION, mDescription.getText().toString());
-        getContentResolver().update(uri, cv, selection, selectionArgs);
+        handler.startUpdate(0, null, uri, cv, selection, selectionArgs);
     }
 
     @Override
