@@ -3,9 +3,13 @@ package com.example;
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -14,7 +18,7 @@ import android.widget.EditText;
 
 import com.example.provider.TaskProvider;
 
-public class EditTaskActivity extends FragmentActivity implements OnClickListener {
+public class EditTaskActivity extends FragmentActivity implements OnClickListener, LoaderCallbacks<Cursor> {
 
     public static final String TASK_ID = "TaskId";
     private long mTaskId;
@@ -39,6 +43,8 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
         mName = (EditText) findViewById(R.id.name);
         mDescription = (EditText) findViewById(R.id.description);
         mDate = (DatePicker) findViewById(R.id.date);
+        
+        getSupportLoaderManager().initLoader(0, null, this);
     }
     
     @Override
@@ -46,6 +52,7 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
         super.onPause();
         
         // Save newly entered data to the database
+        // Don't block the UI thread
         AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
         };
 
@@ -63,5 +70,31 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
         if (v.getId() == R.id.finish) {
             finish();
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+        Uri uri = TaskProvider.getContentUri();
+        String[] projection = new String[] {
+                TaskProvider.Task.NAME,
+                TaskProvider.Task.DESCRIPTION,
+                TaskProvider.Task.DATE
+        };
+        String selection = TaskProvider.Task._ID + " = ?";
+        String[] selectionArgs = new String[] {Long.toString(mTaskId)};
+        return new CursorLoader(this, uri, projection, selection, selectionArgs, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        cursor.moveToFirst();
+        String name = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.NAME));
+        String desc = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.DESCRIPTION));
+        mName.setText(name);
+        mDescription.setText(desc);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 }
