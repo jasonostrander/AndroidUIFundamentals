@@ -28,7 +28,6 @@ public class TimeListAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder holder = (ViewHolder) view.getTag();
-        Log.v("jason", "name = " + cursor.getString(holder.nameIndex));
         holder.name.setText(cursor.getString(holder.nameIndex));
         long time = cursor.getLong(holder.timeIndex);
         holder.time.setText(DateUtils.formatElapsedTime(time/1000));

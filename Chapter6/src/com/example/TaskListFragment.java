@@ -58,13 +58,12 @@ public class TaskListFragment extends ListFragment implements LoaderCallbacks<Cu
     
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-        Uri uri = TaskProvider.CONTENT_URI;
+        Uri uri = TaskProvider.getContentUri();
         return new CursorLoader(getActivity(), uri, null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.v("jason", "onLoadFinished: " + cursor.getCount());
         mAdapter.swapCursor(cursor);
     }
 

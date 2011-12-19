@@ -136,7 +136,6 @@ public class TimeTrackerActivity extends FragmentActivity
             } else {
                 ssButton.setText(R.string.start);
                 mTimerService.stopTimer();
-                saveNewTask();
             }
         } else if (v.getId() == R.id.edit) {
             // Finish the time input activity
@@ -208,20 +207,5 @@ public class TimeTrackerActivity extends FragmentActivity
         mPager.setCurrentItem(0);
     }
 
-    private void saveNewTask() {
-        AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
-        };
-
-        TimerFragment tf = mPagerAdapter.mTimerFragment;
-        Uri uri = TaskProvider.CONTENT_URI;
-        ContentValues cv = new ContentValues();
-        cv.put(TaskProvider.Task.NAME, tf.getName());
-        cv.put(TaskProvider.Task.DATE, tf.getDate());
-        cv.put(TaskProvider.Task.DESCRIPTION, tf.getDescription());
-        cv.put(TaskProvider.Task.ACTIVE, true);
-        cv.put(TaskProvider.Task.TIME, mTimerService.getTime());
-
-        handler.startInsert(0, null, uri, cv);
-    }
 }
 

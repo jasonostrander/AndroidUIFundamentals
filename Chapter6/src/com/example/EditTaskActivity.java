@@ -45,7 +45,7 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
         super.onPause();
         
         // Save newly entered data to the database
-        Uri uri = TaskProvider.CONTENT_URI_WITH_TASK;
+        Uri uri = TaskProvider.getContentUriWithTask(mTaskId);
         String selection = TaskProvider.Task._ID + " = ?";
         String[] selectionArgs = new String[] {Long.toString(mTaskId)};
         ContentValues cv = new ContentValues();
