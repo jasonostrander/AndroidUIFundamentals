@@ -170,6 +170,8 @@ public class TimerFragment extends Fragment {
     
     private void animateDigit(final int id, final long value) {
         Activity activity = getActivity();
+        if (activity == null) return;
+        
         final View v = activity.findViewById(id);
         final TextView text1 = (TextView) v.findViewById(R.id.text1);
         final TextView text2 = (TextView) v.findViewById(R.id.text2 );
