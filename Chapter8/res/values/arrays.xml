@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="list_items">
+        <item>Task 1</item>
+        <item>Task 2</item>
+        <item>Task 3</item>
+        <item>Task 4</item>
+        <item>Task 5</item>
+        <item>Task 6</item>
+        <item>Task 7</item>
+        <item>Task 8</item>
+    </string-array>
+    
+</resources>
