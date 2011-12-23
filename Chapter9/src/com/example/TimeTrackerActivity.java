@@ -168,9 +168,9 @@ public class TimeTrackerActivity extends FragmentActivity
             long time = intent.getLongExtra("time", 0);
 
             if (ACTION_TIME_UPDATE.equals(action)) {
-                TextView counter = (TextView) TimeTrackerActivity.this.findViewById(R.id.counter);
-                if (counter != null)
-                    counter.setText(DateUtils.formatElapsedTime(time/1000));
+                TimerFragment frag = mPagerAdapter.mTimerFragment;
+                if (frag != null)
+                    frag.setCounterTime(time);
             }
         }
     };

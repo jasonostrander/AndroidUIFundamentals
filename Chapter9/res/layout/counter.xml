@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/counter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal" >
+
+    <include android:id="@+id/hour1" layout="@layout/digit"  android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    <include android:id="@+id/hour2" layout="@layout/digit"  android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textSize="50sp"
+        android:gravity="bottom"/>
+    
+    <include android:id="@+id/minute1" layout="@layout/digit"  android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    <include android:id="@+id/minute2" layout="@layout/digit"  android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textSize="50sp"
+        android:gravity="bottom"/>
+    
+    <include android:id="@+id/second1" layout="@layout/digit"  android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    <include android:id="@+id/second2" layout="@layout/digit"  android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    
+</LinearLayout>
