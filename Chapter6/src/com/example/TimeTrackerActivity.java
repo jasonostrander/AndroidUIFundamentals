@@ -142,8 +142,6 @@ public class TimeTrackerActivity extends FragmentActivity
             Intent intent = new Intent(TimeTrackerActivity.this, EditTaskActivity.class);
             intent.putExtra(EditTaskActivity.TASK_ID, mTimerService.getTaskId());
             startActivity(intent);
-        } else if (v.getId() == R.id.delete) {
-            finish();
         } else if (v.getId() == R.id.new_task) {
             startNewTimerTask();
             ssButton.setText(R.string.start);

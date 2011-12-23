@@ -76,8 +76,6 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
             // Finish the time input activity
             Intent intent = new Intent(TimeTrackerActivity.this, EditTaskActivity.class);
             startActivity(intent);
-        } else if (v.getId() == R.id.delete) {
-            finish();
         }
     }
     
