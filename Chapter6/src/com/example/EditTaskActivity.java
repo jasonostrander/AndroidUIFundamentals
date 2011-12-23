@@ -37,7 +37,7 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
             mTaskId = extras.getLong(TASK_ID);
         }
         
-        Button finish = (Button) findViewById(R.id.finish);
+        Button finish = (Button) findViewById(R.id.finished);
         finish.setOnClickListener(this);
         
         mName = (EditText) findViewById(R.id.name);
@@ -67,7 +67,7 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.finish) {
+        if (v.getId() == R.id.finished) {
             finish();
         }
     }

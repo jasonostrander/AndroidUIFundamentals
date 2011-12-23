@@ -105,8 +105,8 @@ public class TimeTrackerActivity extends Activity implements OnClickListener, Se
             // Finish the time input activity
             Intent intent = new Intent(TimeTrackerActivity.this, EditTaskActivity.class);
             startActivity(intent);
-        } else if (v.getId() == R.id.delete) {
-            finish();
+//        } else if (v.getId() == R.id.delete) {
+//            finish();
         }
     }
     

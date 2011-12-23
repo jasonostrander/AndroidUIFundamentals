@@ -14,7 +14,6 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:name=".TimeTrackerApplication" >
-        <uses-library android:name="com.google.android.maps" />
 
         <activity
             android:launchMode="singleTop"

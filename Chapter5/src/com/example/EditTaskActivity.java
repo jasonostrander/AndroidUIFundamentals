@@ -13,13 +13,13 @@ public class EditTaskActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_task);
         
-        Button finish = (Button) findViewById(R.id.finish);
+        Button finish = (Button) findViewById(R.id.finished);
         finish.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.finish) {
+        if (v.getId() == R.id.finished) {
             finish();
         }
     }

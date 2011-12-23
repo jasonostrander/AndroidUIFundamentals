@@ -19,7 +19,7 @@ public class EditTaskActivity extends Activity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.finish) {
+        if (v.getId() == R.id.finished) {
             finish();
         }
     }
