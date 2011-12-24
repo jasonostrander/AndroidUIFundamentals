@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:fillViewport="true" >
 
-    <TextView
-        android:id="@+id/counter"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="@string/sample_time"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="50sp" >
-    </TextView>
-
-    <Button
-        android:id="@+id/start_stop"
-        style="@style/custom_button"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:text="@string/start" />
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true" >
+        <TextView
+            android:id="@+id/counter"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/sample_time"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="50sp" >
+        </TextView>
+
+        <Button
+            android:id="@+id/start_stop"
+            style="@style/custom_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:text="@string/start" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="vertical" >
 
             <include
@@ -55,14 +55,14 @@
                 android:layout_marginBottom="20dp"
                 layout="@layout/detail_item" />
         </LinearLayout>
-    </ScrollView>
 
-    <Button
-        android:id="@+id/edit"
-        style="@style/custom_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/edit" >
-    </Button>
+        <Button
+            android:id="@+id/edit"
+            style="@style/custom_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/edit" >
+        </Button>
+    </LinearLayout>
 
-</LinearLayout>
+</ScrollView>
