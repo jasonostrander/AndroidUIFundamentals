@@ -27,7 +27,7 @@
             android:layout_margin="10dp"
             android:hint="@string/description"
             android:gravity="top|left"
-            android:inputType="textCapSentences" />
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine" />
 
         <DatePicker
             android:id="@+id/date"
