@@ -10,12 +10,13 @@
         android:orientation="vertical" >
 
         <EditText
-            android:id="@+id/task_name"
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/task_name"
             android:layout_margin="10dp"
-            android:textSize="24dp" >
+            android:textSize="24dp"
+            android:inputType="textCapWords" >
         </EditText>
 
         <EditText
@@ -25,10 +26,11 @@
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:hint="@string/description"
-            android:gravity="top|left" />
+            android:gravity="top|left"
+            android:inputType="textCapSentences" />
 
         <DatePicker
-            android:id="@+id/datePicker1"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
