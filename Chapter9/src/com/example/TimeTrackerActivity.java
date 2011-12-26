@@ -123,6 +123,20 @@ public class TimeTrackerActivity extends FragmentActivity
     }
     
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        if (resultCode == EditTaskActivity.RESULT_OK) {
+            Bundle extras = data.getExtras();
+            long taskId = extras.getLong(EditTaskActivity.TASK_ID);
+            if (taskId > -1) {
+                onTaskSelected(taskId, null, null, 0, 0);
+            }
+        }
+        
+    }
+    
+    @Override
     public void onClick(View v) {
         TextView ssButton = (TextView) findViewById(R.id.start_stop);
 
