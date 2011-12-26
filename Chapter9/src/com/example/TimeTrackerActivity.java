@@ -145,15 +145,13 @@ public class TimeTrackerActivity extends FragmentActivity
         } else if (v.getId() == R.id.new_task) {
             startNewTimerTask();
             ssButton.setText(R.string.start);
-            TextView counter = (TextView) findViewById(R.id.counter);
-            counter.setText(DateUtils.formatElapsedTime(0));
         }
     }
     
     private void startNewTimerTask() {
         mPager.setCurrentItem(0);
         mTimerService.resetTimer();
-        
+        mPagerAdapter.mTimerFragment.setCounterTime(0);
     }
     
     private void bindTimerService() {
@@ -208,12 +206,11 @@ public class TimeTrackerActivity extends FragmentActivity
     @Override
     public void onTaskSelected(long id, String name, String desc, long date, int time) {
         mPager.setCurrentItem(0);
-        TextView nameView = (TextView) findViewById(R.id.task_name).findViewById(R.id.text);
-        TextView descView = (TextView) findViewById(R.id.task_desc).findViewById(R.id.text);
-        TextView counter = (TextView) findViewById(R.id.counter);
-        nameView.setText(name);
-        descView.setText(desc);
-        counter.setText(DateUtils.formatElapsedTime(time/1000));
+        TimerFragment frag = mPagerAdapter.mTimerFragment;
+        frag.setName(name);
+        frag.setDescription(desc);
+        frag.setDate(date);
+        frag.setCounterTime(time);
         mTimerService.setTask(id, time);
     }
 }
