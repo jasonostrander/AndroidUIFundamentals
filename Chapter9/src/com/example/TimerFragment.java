@@ -27,36 +27,23 @@ import com.example.provider.TaskProvider;
 
 public class TimerFragment extends Fragment {
 
-    private long mDate;
     private LinearLayout mCounter;
-    private TextView mName;
-    private TextView mDescription;
+    private View mName;
+    private View mDescription;
+    private View mDate;
     private Button mStartStop;
     private GestureDetector mGestureDetector;
     
     public void setName(String name) {
-        setDescAndText(R.id.task_name, R.string.detail_name, name); 
-    }
-    
-    public String getName() {
-        return (String) mName.getText();
+        setNameAndText(mName, R.string.detail_name, name); 
     }
     
     public void setDate(long date) {
-        mDate = date;
-        setDescAndText(R.id.task_date, R.string.detail_date, Long.toString(date));
+        setNameAndText(mDate, R.string.detail_date, Long.toString(date));
     }
-    
-    public long getDate() {
-        return mDate;
-    }
-    
+
     public void setDescription(String description) {
-        setDescAndText(R.id.task_desc, R.string.detail_desc, description);
-    }
-    
-    public String getDescription() {
-        return (String) mDescription.getText();
+        setNameAndText(mDescription, R.string.detail_desc, description);
     }
     
     @Override
@@ -65,15 +52,12 @@ public class TimerFragment extends Fragment {
         return inflater.inflate(R.layout.task_detail, null);
     }
 
-    
-    private TextView setDescAndText(int id, int desc, String value) {
-        View v = getActivity().findViewById(id);
+    private void setNameAndText(View v, int nameId, String value) {
         TextView name = (TextView) v.findViewById(R.id.name);
         TextView text = (TextView) v.findViewById(R.id.text);
-        String s = getResources().getString(desc);
+        String s = getResources().getString(nameId);
         name.setText(s);
         text.setText(value);
-        return text;
     }
 
     @Override
@@ -100,8 +84,6 @@ public class TimerFragment extends Fragment {
         Button editButton = (Button) activity.findViewById(R.id.edit);
         editButton.setOnClickListener(activity);
 
-        mName = setDescAndText(R.id.task_name, R.string.detail_name, "test");
-        mDescription = setDescAndText(R.id.task_name, R.string.detail_name, "testing");
         mStartStop = (Button) activity.findViewById(R.id.start_stop);
         
         long date = System.currentTimeMillis();
@@ -113,6 +95,9 @@ public class TimerFragment extends Fragment {
             date = savedInstanceState.getLong("dateTime", System.currentTimeMillis());
         }
 
+        mName = activity.findViewById(R.id.task_name);
+        mDate = activity.findViewById(R.id.task_date);
+        mDescription = activity.findViewById(R.id.task_desc);
         setupTextViews(null);
     }
 
@@ -129,9 +114,9 @@ public class TimerFragment extends Fragment {
             date = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.DATE));
             desc = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.DESCRIPTION));
         }
-        setDescAndText(R.id.task_name, R.string.detail_name, name); 
-        setDescAndText(R.id.task_date, R.string.detail_date, date);
-        setDescAndText(R.id.task_desc, R.string.detail_desc, desc);
+        setNameAndText(mName, R.string.detail_name, name); 
+        setNameAndText(mDate, R.string.detail_date, date);
+        setNameAndText(mDescription, R.string.detail_desc, desc);
     }
     
     private class DoubleTapListener extends GestureDetector.SimpleOnGestureListener {
