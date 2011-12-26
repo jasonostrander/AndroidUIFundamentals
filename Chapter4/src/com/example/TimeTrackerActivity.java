@@ -45,10 +45,10 @@ public class TimeTrackerActivity extends Activity implements OnClickListener, Se
         Button editButton = (Button) findViewById(R.id.edit);
         editButton.setOnClickListener(this);
 
-        TextView date = (TextView) findViewById(R.id.date_select);
+        TextView date = (TextView) findViewById(R.id.task_date);
         date.setText(DateUtils.formatDateTime(this, mDateTime, DATE_FLAGS));
 
-        TextView description = (TextView) findViewById(R.id.description);
+        TextView description = (TextView) findViewById(R.id.task_desc);
         description.setText(getResources().getString(R.string.description));
 
         if (savedInstanceState != null) {

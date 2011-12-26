@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,10 @@ public class TimerFragment extends Fragment {
         return inflater.inflate(R.layout.task_detail, container);
     }
 
-    
-    private void setDescAndText(Activity activity, int id, int desc, String value) {
-        View v = activity.findViewById(id);
+    private void setNameAndText(View v, int nameId, String value) {
         TextView name = (TextView) v.findViewById(R.id.name);
         TextView text = (TextView) v.findViewById(R.id.text);
-        String s = getResources().getString(desc);
+        String s = getResources().getString(nameId);
         name.setText(s);
         text.setText(value);
     }
@@ -53,11 +52,16 @@ public class TimerFragment extends Fragment {
             date = savedInstanceState.getLong("dateTime", System.currentTimeMillis());
         }
 
+        View v = activity.findViewById(R.id.task_name);
         String text = getResources().getString(R.string.task_name);
-        setDescAndText(activity, R.id.task_name, R.string.detail_name, text);
+        setNameAndText(v, R.string.detail_name, text);
+        
+        v = activity.findViewById(R.id.task_date);
         text = DateUtils.formatDateTime(activity, date, TimeTrackerActivity.DATE_FLAGS);
-        setDescAndText(activity, R.id.task_date, R.string.detail_date, text);
-        text = getResources().getString(R.string.lorem_ipsum);
-        setDescAndText(activity, R.id.task_desc, R.string.detail_desc, text);
+        setNameAndText(v, R.string.detail_date, text);
+        
+        v = activity.findViewById(R.id.task_desc);
+        text = getResources().getString(R.string.description);
+        setNameAndText(v, R.string.detail_desc, text);
     }
 }
