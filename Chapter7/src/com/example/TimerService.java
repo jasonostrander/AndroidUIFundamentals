@@ -47,7 +47,7 @@ public class TimerService extends Service {
             mHandler.sendEmptyMessageDelayed(0, 250);
         };
     };
-
+    
     @Override
     public void onCreate() {
         Log.i(TAG, "onCreate");
@@ -57,6 +57,11 @@ public class TimerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received start id " + startId + " with intent: " + intent);
+        
+        if (isTimerRunning()) {
+            stopTimer();
+            return START_STICKY;
+        }
         
         if (mTaskId < 0) {
             createNewTask();
@@ -94,6 +99,11 @@ public class TimerService extends Service {
         mNM.cancel(TIMER_NOTIFICATION);
         
         updateTask();
+        
+        // Broadcast timer stopped
+        Intent intent = new Intent(TimeTrackerActivity.ACTION_TIMER_STOPPED);
+        intent.putExtra("time", mTime);
+        sendBroadcast(intent);
     }
 
     public boolean isTimerRunning() {

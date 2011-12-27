@@ -36,6 +36,7 @@ public class TimeTrackerActivity extends FragmentActivity
     
     public static final String ACTION_TIME_UPDATE = "ActionTimeUpdate";
     public static final String ACTION_TIMER_FINISHED = "ActionTimerFinished";
+    public static final String ACTION_TIMER_STOPPED = "ActionTimerStopped";
     private static final String TAG = "TimeTrackerActivity";
     public static int TIMER_NOTIFICATION = 0;
     public static int DATE_FLAGS = DateUtils.FORMAT_ABBREV_ALL | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE;
