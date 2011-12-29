@@ -41,14 +41,13 @@ public class TimerWidgetProvider extends AppWidgetProvider {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.timer_widget);
         views.setOnClickPendingIntent(R.id.start_stop, pi);
-
+        
         appWidgetManager.updateAppWidget(appWidgetIds, views);
     }
     
     private void updateWidgetTime(Context context, long time, boolean isRunning) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
         int[] ids = manager.getAppWidgetIds(new ComponentName(context, TimerWidgetProvider.class));
-        Log.v("jason", "ids = " + ids);
         
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.timer_widget);
         views.setTextViewText(R.id.counter, DateUtils.formatElapsedTime(time/1000));
