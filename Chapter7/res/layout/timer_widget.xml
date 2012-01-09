@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:background="@drawable/widget_background" >
-
+    
     <TextView
         android:id="@+id/counter"
         android:layout_width="0dp"

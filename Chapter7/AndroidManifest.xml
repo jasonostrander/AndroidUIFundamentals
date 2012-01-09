@@ -44,9 +44,9 @@
         <receiver android:name=".TimerWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="ActionTimeUpdate" />
-                <action android:name="ActionTimerFinished" />
-                <action android:name="ActionTimerStopped" />
+                <action android:name="com.example.ActionTimeUpdate" />
+                <action android:name="com.example.ActionTimerFinished" />
+                <action android:name="com.example.ActionTimerStopped" />
             </intent-filter>
 
             <meta-data
