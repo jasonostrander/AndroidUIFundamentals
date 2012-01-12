@@ -162,9 +162,9 @@ public class TimerFragment extends Fragment {
         final TextView text2 = (TextView) v.findViewById(R.id.text2 );
 
         boolean running = false;
-        Object obj = text1.getTag();
-        if (obj != null) running = (Boolean) obj;
-        
+        if (text1.getAnimation() != null)
+            running = !text1.getAnimation().hasEnded();
+
         if (Long.parseLong(text1.getText().toString()) == value || running) return;
 
         Animation animation = AnimationUtils.loadAnimation(activity, R.anim.slide_out);
@@ -180,11 +180,9 @@ public class TimerFragment extends Fragment {
             @Override
             public void onAnimationEnd(Animation animation) {
                 text1.setText("" + value);
-                text1.setTag(false);
             }
         });
         text1.startAnimation(animation);
-        text1.setTag(true);
         
         animation = AnimationUtils.loadAnimation(activity, R.anim.slide_in);
         text2.startAnimation(animation);
