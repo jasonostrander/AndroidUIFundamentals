@@ -10,6 +10,6 @@ public class TaskListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.task_list, container);
+        return inflater.inflate(R.layout.task_list, null);
     }
 }
