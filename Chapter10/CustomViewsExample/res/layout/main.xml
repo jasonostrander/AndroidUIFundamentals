@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:example="http://schemas.android.com/apk/res/com.example"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal" >
+
+    <com.example.CrossView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+     
+    <com.example.CrossView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        example:rotation="30"
+        android:color="#0000FF" />
+
+    <com.example.CrossView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        example:rotation="45"
+        android:color="#FFFF00" />
+
+</LinearLayout>
