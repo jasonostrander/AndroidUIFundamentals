@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World!</string>
+    <string name="app_name">AccessibilityExample</string>
+
+    <string name="arguments">Arg %1$s and %2$d</string>
+    <string name="button">Button</string>
+</resources>
