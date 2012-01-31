@@ -68,8 +68,12 @@ public class TaskProvider extends ContentProvider {
     @Override
     public int delete(Uri arg0, String selection, String[] selectionArgs) {
         SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-        db.delete(TABLE_NAME, selection, selectionArgs);
-        return 0;
+        int rows = db.delete(TABLE_NAME, selection, selectionArgs);
+        
+        // Notify cursors of change
+        Uri result = getContentUri();
+        getContext().getContentResolver().notifyChange(result, null);
+        return rows;
     }
 
     @Override
