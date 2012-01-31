@@ -11,6 +11,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+/**
+ * Content provider for timer tasks. 
+ * 
+ */
 public class TaskProvider extends ContentProvider {
     private static final String TABLE_NAME = "TimerTasks";
     

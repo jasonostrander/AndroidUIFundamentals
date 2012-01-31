@@ -63,32 +63,28 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
     }
     
     @Override
-    protected void onPause() {
-        super.onPause();
-        
-        // Save newly entered data to the database
-        // Don't block the UI thread
-        AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
-
-        Uri uri = TaskProvider.getContentUri();
-        ContentValues cv = new ContentValues();
-        cv.put(TaskProvider.Task.NAME, mName.getText().toString());
-        cv.put(TaskProvider.Task.DESCRIPTION, mDescription.getText().toString());
-        cv.put(TaskProvider.Task.DATE, getDateMillis());
-        
-        if (mTaskId > -1) {
-            String selection = TaskProvider.Task._ID + " = ?";
-            String[] selectionArgs = new String[] {Long.toString(mTaskId)};
-            handler.startUpdate(0, null, uri, cv, selection, selectionArgs);
-        } else {
-            cv.put(TaskProvider.Task.TIME, 0);
-            handler.startInsert(0, null, uri, cv);
-        }
-    }
-
-    @Override
     public void onClick(View v) {
         if (v.getId() == R.id.finished) {
+            // Save newly entered data to the database
+            // Don't block the UI thread
+            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
+
+            Uri uri = TaskProvider.getContentUri();
+            ContentValues cv = new ContentValues();
+            cv.put(TaskProvider.Task.NAME, mName.getText().toString());
+            cv.put(TaskProvider.Task.DESCRIPTION, mDescription.getText().toString());
+            cv.put(TaskProvider.Task.DATE, getDateMillis());
+            
+            if (mTaskId > -1) {
+                String selection = TaskProvider.Task._ID + " = ?";
+                String[] selectionArgs = new String[] {Long.toString(mTaskId)};
+                handler.startUpdate(0, null, uri, cv, selection, selectionArgs);
+            } else {
+                cv.put(TaskProvider.Task.TIME, 0);
+                handler.startInsert(0, null, uri, cv);
+            }
+
+            // Now finish the task, returning a result to the TimeTrackerActivity
             Intent data = new Intent();
             data.putExtra(TASK_ID, mTaskId);
             data.putExtra(TASK_NAME, mName.getText().toString());
