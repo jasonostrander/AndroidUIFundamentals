@@ -1,24 +1,17 @@
 package com.example;
 
 import android.app.ActionBar;
-import android.content.AsyncQueryHandler;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -28,7 +21,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.TaskListFragment.TaskListener;
-import com.example.provider.TaskProvider;
 
 public class TimeTrackerActivity extends FragmentActivity 
         implements OnClickListener, ServiceConnection, 

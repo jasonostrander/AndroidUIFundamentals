@@ -1,7 +1,5 @@
 package com.example;
 
-import com.example.provider.TaskProvider;
-
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,12 +8,13 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+
+import com.example.provider.TaskProvider;
 
 public class TaskListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 
