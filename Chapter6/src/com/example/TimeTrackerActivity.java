@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -159,8 +160,14 @@ public class TimeTrackerActivity extends FragmentActivity
     private void startNewTimerTask() {
         mPager.setCurrentItem(0);
         mTimerService.resetTimer();
-        TextView counter = (TextView) findViewById(R.id.counter);
-        counter.setText(DateUtils.formatElapsedTime(0));
+        
+        Resources res = getResources();
+        onTaskSelected(
+                -1,
+                res.getString(R.string.new_task),
+                res.getString(R.string.description),
+                System.currentTimeMillis(),
+                0);
     }
     
     private void bindTimerService() {
@@ -219,10 +226,13 @@ public class TimeTrackerActivity extends FragmentActivity
         frag.setName(name);
         frag.setDescription(desc);
         frag.setDate(DateUtils.formatDateTime(this, date, DATE_FLAGS));
+
         TextView counter = (TextView) TimeTrackerActivity.this.findViewById(R.id.counter);
         if (counter != null)
             counter.setText(DateUtils.formatElapsedTime(time/1000));
-        mTimerService.setTask(id, time);
+        
+        if (id >= 0)
+            mTimerService.setTask(id, time);
     }
 }
 
