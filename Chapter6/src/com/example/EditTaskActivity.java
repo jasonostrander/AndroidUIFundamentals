@@ -1,5 +1,7 @@
 package com.example;
 
+import java.util.Calendar;
+
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -21,11 +23,24 @@ import com.example.provider.TaskProvider;
 public class EditTaskActivity extends FragmentActivity implements OnClickListener, LoaderCallbacks<Cursor> {
 
     public static final String TASK_ID = "TaskId";
-    private long mTaskId;
+    public static final String TASK_NAME = "TaskName";
+    public static final String TASK_DATE = "TaskDATE";
+    public static final String TASK_DESCRIPTION = "TaskDescription";
+    
+    private long mTaskId = -1;
     private EditText mName;
     private EditText mDescription;
     private DatePicker mDate;
 
+    private long getDateMillis() {
+        int year = mDate.getYear();
+        int month = mDate.getMonth();
+        int dayOfMonth = mDate.getDayOfMonth();
+        Calendar c = Calendar.getInstance();
+        c.set(year, month, dayOfMonth);
+        return c.getTimeInMillis();
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,21 +68,33 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
         
         // Save newly entered data to the database
         // Don't block the UI thread
-        AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
-        };
+        AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
 
         Uri uri = TaskProvider.getContentUri();
-        String selection = TaskProvider.Task._ID + " = ?";
-        String[] selectionArgs = new String[] {Long.toString(mTaskId)};
         ContentValues cv = new ContentValues();
         cv.put(TaskProvider.Task.NAME, mName.getText().toString());
         cv.put(TaskProvider.Task.DESCRIPTION, mDescription.getText().toString());
-        handler.startUpdate(0, null, uri, cv, selection, selectionArgs);
+        cv.put(TaskProvider.Task.DATE, getDateMillis());
+        
+        if (mTaskId > -1) {
+            String selection = TaskProvider.Task._ID + " = ?";
+            String[] selectionArgs = new String[] {Long.toString(mTaskId)};
+            handler.startUpdate(0, null, uri, cv, selection, selectionArgs);
+        } else {
+            cv.put(TaskProvider.Task.TIME, 0);
+            handler.startInsert(0, null, uri, cv);
+        }
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.finished) {
+            Intent data = new Intent();
+            data.putExtra(TASK_ID, mTaskId);
+            data.putExtra(TASK_NAME, mName.getText().toString());
+            data.putExtra(TASK_DATE, getDateMillis());
+            data.putExtra(TASK_DESCRIPTION, mDescription.getText().toString());
+            setResult(RESULT_OK, data);
             finish();
         }
     }
@@ -78,7 +105,7 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
         String[] projection = new String[] {
                 TaskProvider.Task.NAME,
                 TaskProvider.Task.DESCRIPTION,
-                TaskProvider.Task.DATE
+                TaskProvider.Task.DATE,
         };
         String selection = TaskProvider.Task._ID + " = ?";
         String[] selectionArgs = new String[] {Long.toString(mTaskId)};
@@ -87,11 +114,21 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        // Do nothing if this task has not yet been created
+        if (cursor.getCount() <= 0)
+            return;
+        
         cursor.moveToFirst();
         String name = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.NAME));
         String desc = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.DESCRIPTION));
+        long date = cursor.getLong(cursor.getColumnIndexOrThrow(TaskProvider.Task.DATE));
+        
         mName.setText(name);
         mDescription.setText(desc);
+        
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(date);
+        mDate.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
     }
 
     @Override

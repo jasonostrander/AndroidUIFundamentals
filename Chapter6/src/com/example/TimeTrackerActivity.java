@@ -123,6 +123,22 @@ public class TimeTrackerActivity extends FragmentActivity
     }
     
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        if (resultCode == RESULT_OK) {
+            long taskId = data.getLongExtra(EditTaskActivity.TASK_ID, 0);
+            String name = data.getStringExtra(EditTaskActivity.TASK_NAME);
+            long date = data.getLongExtra(EditTaskActivity.TASK_DATE, 0);
+            String desc = data.getStringExtra(EditTaskActivity.TASK_DESCRIPTION);
+            
+            if (taskId > -1) {
+                onTaskSelected(taskId, name, desc, date, 0);
+            }
+        }
+    }
+    
+    @Override
     public void onClick(View v) {
         TextView ssButton = (TextView) findViewById(R.id.start_stop);
 
@@ -141,19 +157,18 @@ public class TimeTrackerActivity extends FragmentActivity
             // Finish the time input activity
             Intent intent = new Intent(TimeTrackerActivity.this, EditTaskActivity.class);
             intent.putExtra(EditTaskActivity.TASK_ID, mTimerService.getTaskId());
-            startActivity(intent);
+            startActivityForResult(intent, 0);
         } else if (v.getId() == R.id.new_task) {
             startNewTimerTask();
             ssButton.setText(R.string.start);
-            TextView counter = (TextView) findViewById(R.id.counter);
-            counter.setText(DateUtils.formatElapsedTime(0));
         }
     }
     
     private void startNewTimerTask() {
         mPager.setCurrentItem(0);
         mTimerService.resetTimer();
-        
+        TextView counter = (TextView) findViewById(R.id.counter);
+        counter.setText(DateUtils.formatElapsedTime(0));
     }
     
     private void bindTimerService() {
@@ -208,12 +223,13 @@ public class TimeTrackerActivity extends FragmentActivity
     @Override
     public void onTaskSelected(long id, String name, String desc, long date, int time) {
         mPager.setCurrentItem(0);
-        TextView nameView = (TextView) findViewById(R.id.task_name).findViewById(R.id.text);
-        TextView descView = (TextView) findViewById(R.id.task_desc).findViewById(R.id.text);
-        TextView counter = (TextView) findViewById(R.id.counter);
-        nameView.setText(name);
-        descView.setText(desc);
-        counter.setText(DateUtils.formatElapsedTime(time/1000));
+        TimerFragment frag = mPagerAdapter.mTimerFragment;
+        frag.setName(name);
+        frag.setDescription(desc);
+        frag.setDate(DateUtils.formatDateTime(this, date, DATE_FLAGS));
+        TextView counter = (TextView) TimeTrackerActivity.this.findViewById(R.id.counter);
+        if (counter != null)
+            counter.setText(DateUtils.formatElapsedTime(time/1000));
         mTimerService.setTask(id, time);
     }
 }

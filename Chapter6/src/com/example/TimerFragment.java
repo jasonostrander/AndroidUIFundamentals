@@ -23,10 +23,10 @@ public class TimerFragment extends Fragment {
         setNameAndText(mName, R.string.detail_name, name); 
     }
     
-    public void setDate(long date) {
-        setNameAndText(mDate, R.string.detail_date, Long.toString(date));
+    public void setDate(String date) {
+        setNameAndText(mDate, R.string.detail_date, date);
     }
-    
+
     public void setDescription(String description) {
         setNameAndText(mDescription, R.string.detail_desc, description);
     }
@@ -60,16 +60,16 @@ public class TimerFragment extends Fragment {
 
         Button editButton = (Button) activity.findViewById(R.id.edit);
         editButton.setOnClickListener(activity);
-
+        
         long date = System.currentTimeMillis();
         if (savedInstanceState != null) {
-            CharSequence seq = savedInstanceState.getCharSequence("currentTime");
-            if (seq != null)
-                mCounter.setText(seq);
+            CharSequence time = savedInstanceState.getCharSequence("currentTime");
+            if (time != null)
+                mCounter.setText(time);
             
             date = savedInstanceState.getLong("dateTime", System.currentTimeMillis());
         }
-        
+
         mName = activity.findViewById(R.id.task_name);
         mDate = activity.findViewById(R.id.task_date);
         mDescription = activity.findViewById(R.id.task_desc);

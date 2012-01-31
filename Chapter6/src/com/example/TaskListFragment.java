@@ -57,8 +57,9 @@ public class TaskListFragment extends ListFragment implements LoaderCallbacks<Cu
         cursor.moveToPosition(position);
         String name = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.NAME));
         String desc = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.DESCRIPTION));
+        long date = cursor.getLong(cursor.getColumnIndexOrThrow(TaskProvider.Task.DATE));
         int time = cursor.getInt(cursor.getColumnIndexOrThrow(TaskProvider.Task.TIME));
-        mListener.onTaskSelected(id, name, desc, 0, time);
+        mListener.onTaskSelected(id, name, desc, date, time);
     }
     
     @Override
