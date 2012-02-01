@@ -83,7 +83,7 @@ public class TimerFragment extends Fragment {
         if (cursor == null) {
             name = getResources().getString(R.string.task_name);
             date = DateUtils.formatDateTime(getActivity(), System.currentTimeMillis(), TimeTrackerActivity.DATE_FLAGS);
-            desc = getResources().getString(R.string.lorem_ipsum); 
+            desc = getResources().getString(R.string.description); 
         } else {
             name = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.NAME));
             date = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.DATE));
