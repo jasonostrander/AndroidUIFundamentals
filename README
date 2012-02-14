@@ -1,4 +1,5 @@
-# Overview
+Overview
+============
 This is the code for the book [Android UI Fundamentals](http://www.peachpit.com/androiduifundamentals "Android UI Fundamentals"). 
 
 The code for each chapter is in the corresponding folder. Chapters 2 through 9 cover the creation of a simple time tracking application. Some chapters contain addition sample code.
