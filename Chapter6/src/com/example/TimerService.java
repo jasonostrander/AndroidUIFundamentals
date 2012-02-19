@@ -56,7 +56,7 @@ public class TimerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "Received start id " + startId + " with intent: " + intent);
+        Log.i(TAG, "Received start id " + startId + " with intent: " + intent + " mTaskId = " + mTaskId);
         
         if (mTaskId < 0) {
             createNewTask();

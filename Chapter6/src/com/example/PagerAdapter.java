@@ -6,22 +6,18 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class PagerAdapter extends FragmentPagerAdapter {
     public static final int PAGE_COUNT = 2;
-    TimerFragment mTimerFragment;
-    TaskListFragment mTaskListFragment;
     
     public PagerAdapter(FragmentManager fm) {
         super(fm);
-        mTimerFragment = new TimerFragment();
-        mTaskListFragment = new TaskListFragment();
     }
 
     @Override
     public Fragment getItem(int arg0) {
         switch(arg0) {
         case 0:
-            return mTimerFragment;
+            return new TimerFragment();
         case 1:
-            return mTaskListFragment;
+            return new TaskListFragment();
         }
         return null;
     }

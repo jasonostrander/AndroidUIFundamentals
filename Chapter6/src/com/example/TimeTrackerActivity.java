@@ -222,15 +222,12 @@ public class TimeTrackerActivity extends FragmentActivity
     @Override
     public void onTaskSelected(long id, String name, String desc, long date, int time) {
         mPager.setCurrentItem(0);
-        TimerFragment frag = mPagerAdapter.mTimerFragment;
+        // ViewPager keeps fragments by tag: "android:switcher:<pager_id>:<item_pos>"
+        TimerFragment frag = (TimerFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.pager+":0");
         frag.setName(name);
         frag.setDescription(desc);
         frag.setDate(DateUtils.formatDateTime(this, date, DATE_FLAGS));
-
-        TextView counter = (TextView) TimeTrackerActivity.this.findViewById(R.id.counter);
-        if (counter != null)
-            counter.setText(DateUtils.formatElapsedTime(time/1000));
-        
+        frag.setCounter(DateUtils.formatElapsedTime(time/1000));
         if (id >= 0)
             mTimerService.setTask(id, time);
     }
