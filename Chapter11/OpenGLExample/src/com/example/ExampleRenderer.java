@@ -1,15 +1,14 @@
 package com.example;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-import android.opengl.GLU;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.ByteOrder;
 import android.opengl.GLSurfaceView;
-import android.os.SystemClock;
-import android.util.Log;
+import android.opengl.GLU;
 
 public class ExampleRenderer implements GLSurfaceView.Renderer {
     private float mRed;
