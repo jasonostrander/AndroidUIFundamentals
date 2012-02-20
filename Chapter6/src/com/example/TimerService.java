@@ -164,6 +164,14 @@ public class TimerService extends Service {
         mTime = time;
     }
     
+    public long getTime() {
+        return this.mTime;
+    }
+    
+    public void setTime(long time) {
+        mTime = time;
+    }
+    
     private void createNewTask() {
         AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
             @Override

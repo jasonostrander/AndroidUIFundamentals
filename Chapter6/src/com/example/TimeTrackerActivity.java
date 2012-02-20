@@ -37,13 +37,23 @@ public class TimeTrackerActivity extends FragmentActivity
     private TabHost mTabHost;
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
+    private long mCurrentTask = -1;
+    private long mCurrentTime = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+        
+        if (savedInstanceState != null) {
+            long id = savedInstanceState.getLong("id");
+            if (id > 0)
+                mCurrentTask = id;
+            long time = savedInstanceState.getLong("time");
+            if (time > 0)
+                mCurrentTime = time;
+        }
         
         FragmentManager fm = getSupportFragmentManager();
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -99,6 +109,13 @@ public class TimeTrackerActivity extends FragmentActivity
     }
     
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putLong("id", mCurrentTask);
+        outState.putLong("time", mCurrentTime);
+        super.onSaveInstanceState(outState);
+    }
+    
+    @Override
     protected void onPause() {
         super.onPause();
     }
@@ -109,6 +126,8 @@ public class TimeTrackerActivity extends FragmentActivity
             unregisterReceiver(mTimeReceiver);
         
         if (mTimerService != null) {
+            mCurrentTask = mTimerService.getTaskId();
+            mCurrentTime = mTimerService.getTime();
             unbindService(this);
             mTimerService = null;
         }
@@ -141,6 +160,7 @@ public class TimeTrackerActivity extends FragmentActivity
                 startService(new Intent(this, TimerService.class));
             } else if (!mTimerService.isTimerRunning()) {
                 ssButton.setText(R.string.stop);
+                mTimerService.setTask(mCurrentTask, mCurrentTime);
                 mTimerService.startService(new Intent(this, TimerService.class));
             } else {
                 ssButton.setText(R.string.start);
@@ -228,8 +248,9 @@ public class TimeTrackerActivity extends FragmentActivity
         frag.setDescription(desc);
         frag.setDate(DateUtils.formatDateTime(this, date, DATE_FLAGS));
         frag.setCounter(DateUtils.formatElapsedTime(time/1000));
-        if (id >= 0)
-            mTimerService.setTask(id, time);
+        mCurrentTask = id;
+        mCurrentTime = time;
+        mTimerService.setTask(id, time);
     }
 }
 
