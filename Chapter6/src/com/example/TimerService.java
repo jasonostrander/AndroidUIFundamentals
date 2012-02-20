@@ -1,7 +1,5 @@
 package com.example;
 
-import com.example.provider.TaskProvider;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,7 +8,6 @@ import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
@@ -18,6 +15,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.text.format.DateUtils;
 import android.util.Log;
+
+import com.example.provider.TaskProvider;
 
 public class TimerService extends Service {
     private static final String TAG = "TimerService";
