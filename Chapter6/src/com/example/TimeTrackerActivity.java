@@ -140,12 +140,13 @@ public class TimeTrackerActivity extends FragmentActivity
         
         if (resultCode == RESULT_OK) {
             long taskId = data.getLongExtra(EditTaskActivity.TASK_ID, 0);
+            long time = data.getLongExtra(EditTaskActivity.TASK_TIME, 0);
             String name = data.getStringExtra(EditTaskActivity.TASK_NAME);
             long date = data.getLongExtra(EditTaskActivity.TASK_DATE, 0);
             String desc = data.getStringExtra(EditTaskActivity.TASK_DESCRIPTION);
             
             if (taskId > -1) {
-                onTaskSelected(taskId, name, desc, date, 0);
+                onTaskSelected(taskId, name, desc, date, time);
             }
         }
     }
@@ -170,6 +171,7 @@ public class TimeTrackerActivity extends FragmentActivity
             // Finish the time input activity
             Intent intent = new Intent(TimeTrackerActivity.this, EditTaskActivity.class);
             intent.putExtra(EditTaskActivity.TASK_ID, mTimerService.getTaskId());
+            intent.putExtra(EditTaskActivity.TASK_TIME, mTimerService.getTime());
             startActivityForResult(intent, 0);
         } else if (v.getId() == R.id.new_task) {
             startNewTimerTask();
@@ -240,7 +242,7 @@ public class TimeTrackerActivity extends FragmentActivity
     }
 
     @Override
-    public void onTaskSelected(long id, String name, String desc, long date, int time) {
+    public void onTaskSelected(long id, String name, String desc, long date, long time) {
         mPager.setCurrentItem(0);
         // ViewPager keeps fragments by tag: "android:switcher:<pager_id>:<item_pos>"
         TimerFragment frag = (TimerFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.pager+":0");
@@ -250,7 +252,8 @@ public class TimeTrackerActivity extends FragmentActivity
         frag.setCounter(DateUtils.formatElapsedTime(time/1000));
         mCurrentTask = id;
         mCurrentTime = time;
-        mTimerService.setTask(id, time);
+        if (mTimerService != null)
+            mTimerService.setTask(id, time);
     }
 }
 

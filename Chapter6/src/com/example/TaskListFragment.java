@@ -26,7 +26,7 @@ public class TaskListFragment extends ListFragment implements LoaderCallbacks<Cu
     TaskListener mListener;
     
     public static interface TaskListener {
-        public void onTaskSelected(long id, String name, String desc, long date, int time);
+        public void onTaskSelected(long id, String name, String desc, long date, long time);
     }
 
     @Override

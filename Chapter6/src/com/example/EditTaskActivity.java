@@ -23,11 +23,13 @@ import com.example.provider.TaskProvider;
 public class EditTaskActivity extends FragmentActivity implements OnClickListener, LoaderCallbacks<Cursor> {
 
     public static final String TASK_ID = "TaskId";
+    public static final String TASK_TIME = "TaskTime";
     public static final String TASK_NAME = "TaskName";
     public static final String TASK_DATE = "TaskDATE";
     public static final String TASK_DESCRIPTION = "TaskDescription";
     
     private long mTaskId = -1;
+    private long mTime = 0;
     private EditText mName;
     private EditText mDescription;
     private DatePicker mDate;
@@ -50,6 +52,7 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
         Bundle extras = intent.getExtras();
         if (extras != null) {
             mTaskId = extras.getLong(TASK_ID);
+            mTime = extras.getLong(TASK_TIME);
         }
         
         Button finish = (Button) findViewById(R.id.finished);
@@ -87,6 +90,7 @@ public class EditTaskActivity extends FragmentActivity implements OnClickListene
             // Now finish the task, returning a result to the TimeTrackerActivity
             Intent data = new Intent();
             data.putExtra(TASK_ID, mTaskId);
+            data.putExtra(TASK_TIME, mTime);
             data.putExtra(TASK_NAME, mName.getText().toString());
             data.putExtra(TASK_DATE, getDateMillis());
             data.putExtra(TASK_DESCRIPTION, mDescription.getText().toString());
