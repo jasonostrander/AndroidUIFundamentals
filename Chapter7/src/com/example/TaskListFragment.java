@@ -1,21 +1,24 @@
 package com.example;
 
-import com.example.provider.TaskProvider;
-
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+
+import com.example.provider.TaskProvider;
 
 public class TaskListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 
@@ -23,7 +26,14 @@ public class TaskListFragment extends ListFragment implements LoaderCallbacks<Cu
     TaskListener mListener;
     
     public static interface TaskListener {
-        public void onTaskSelected(long id, String name, String desc, long date, int time);
+        public void onTaskSelected(long id, String name, String desc, long date, long time);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // indicate this fragment adds a menu option
+        setHasOptionsMenu(true);
     }
     
     @Override
@@ -57,8 +67,30 @@ public class TaskListFragment extends ListFragment implements LoaderCallbacks<Cu
         cursor.moveToPosition(position);
         String name = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.NAME));
         String desc = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.DESCRIPTION));
+        long date = cursor.getLong(cursor.getColumnIndexOrThrow(TaskProvider.Task.DATE));
         int time = cursor.getInt(cursor.getColumnIndexOrThrow(TaskProvider.Task.TIME));
-        mListener.onTaskSelected(id, name, desc, 0, time);
+        mListener.onTaskSelected(id, name, desc, date, time);
+    }
+    
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu, menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case R.id.clear_all:
+            //Testing
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            if (fm.findFragmentByTag("dialog") == null) {
+                ConfirmClearDialogFragment frag = ConfirmClearDialogFragment.newInstance();
+                frag.show(fm, "dialog");
+            }
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
     
     @Override
