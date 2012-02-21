@@ -1,6 +1,5 @@
 package com.example.provider;
 
-import android.net.Uri;
 
 public class TaskStore {
     public static final String DEFAULT_SORT_ORDER = COLUMNS.DATE + "DESC";

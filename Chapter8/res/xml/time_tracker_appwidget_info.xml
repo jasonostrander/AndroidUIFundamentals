@@ -1,0 +1,7 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="110dp"
+    android:minHeight="40dp"
+    android:updatePeriodMillis="86400000"
+    android:previewImage="@drawable/time_tracker_widget_preview"
+    android:initialLayout="@layout/timer_widget" >
+</appwidget-provider>

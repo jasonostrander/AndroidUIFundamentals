@@ -1,7 +1,5 @@
 package com.example;
 
-import com.example.provider.TaskProvider;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,7 +8,6 @@ import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
@@ -18,6 +15,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.text.format.DateUtils;
 import android.util.Log;
+
+import com.example.provider.TaskProvider;
 
 public class TimerService extends Service {
     private static final String TAG = "TimerService";
@@ -47,7 +46,7 @@ public class TimerService extends Service {
             mHandler.sendEmptyMessageDelayed(0, 250);
         };
     };
-
+    
     @Override
     public void onCreate() {
         Log.i(TAG, "onCreate");
@@ -56,7 +55,12 @@ public class TimerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "Received start id " + startId + " with intent: " + intent);
+        Log.i(TAG, "Received start id " + startId + " with intent: " + intent + " mTaskId = " + mTaskId);
+        
+        if (isTimerRunning()) {
+            stopTimer();
+            return START_STICKY;
+        }
         
         if (mTaskId < 0) {
             createNewTask();
@@ -94,6 +98,11 @@ public class TimerService extends Service {
         mNM.cancel(TIMER_NOTIFICATION);
         
         updateTask();
+        
+        // Broadcast timer stopped
+        Intent intent = new Intent(TimeTrackerActivity.ACTION_TIMER_STOPPED);
+        intent.putExtra("time", mTime);
+        sendBroadcast(intent);
     }
 
     public boolean isTimerRunning() {
@@ -161,6 +170,14 @@ public class TimerService extends Service {
     public void setTask(long id, long time) {
         resetTimer();
         mTaskId = id;
+        mTime = time;
+    }
+    
+    public long getTime() {
+        return this.mTime;
+    }
+    
+    public void setTime(long time) {
         mTime = time;
     }
     
