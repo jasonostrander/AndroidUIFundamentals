@@ -164,6 +164,8 @@ public class TimeTrackerActivity extends FragmentActivity
                 mTimerService.setTask(mCurrentTask, mCurrentTime);
                 mTimerService.startService(new Intent(this, TimerService.class));
             } else {
+                mCurrentTask = mTimerService.getTaskId();
+                mCurrentTime = mTimerService.getTime();
                 ssButton.setText(R.string.start);
                 mTimerService.stopTimer();
             }
