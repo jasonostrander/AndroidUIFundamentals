@@ -26,8 +26,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class TimeTrackerActivity extends FragmentActivity implements OnClickListener, ServiceConnection {
-    public static final String ACTION_TIME_UPDATE = "ActionTimeUpdate";
-    public static final String ACTION_TIMER_FINISHED = "ActionTimerFinished";
+    public static final String ACTION_TIME_UPDATE = "com.example.ActionTimeUpdate";
+    public static final String ACTION_TIMER_FINISHED = "com.example.ActionTimerFinished";
     private static final String TAG = "TimeTrackerActivity";
     public static int TIMER_NOTIFICATION = 0;
 
