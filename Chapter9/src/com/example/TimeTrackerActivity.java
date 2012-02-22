@@ -1,24 +1,18 @@
 package com.example;
 
 import android.app.ActionBar;
-import android.content.AsyncQueryHandler;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -28,14 +22,14 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.TaskListFragment.TaskListener;
-import com.example.provider.TaskProvider;
 
 public class TimeTrackerActivity extends FragmentActivity 
         implements OnClickListener, ServiceConnection, 
         ViewPager.OnPageChangeListener, TaskListener {
     
-    public static final String ACTION_TIME_UPDATE = "ActionTimeUpdate";
-    public static final String ACTION_TIMER_FINISHED = "ActionTimerFinished";
+    public static final String ACTION_TIME_UPDATE = "com.example.ActionTimeUpdate";
+    public static final String ACTION_TIMER_FINISHED = "com.example.ActionTimerFinished";
+    public static final String ACTION_TIMER_STOPPED = "com.example.ActionTimerStopped";
     private static final String TAG = "TimeTrackerActivity";
     public static int TIMER_NOTIFICATION = 0;
     public static int DATE_FLAGS = DateUtils.FORMAT_ABBREV_ALL | DateUtils.FORMAT_SHOW_WEEKDAY | DateUtils.FORMAT_SHOW_DATE;
@@ -44,13 +38,23 @@ public class TimeTrackerActivity extends FragmentActivity
     private TabHost mTabHost;
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
+    private long mCurrentTask = -1;
+    private long mCurrentTime = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+        
+        if (savedInstanceState != null) {
+            long id = savedInstanceState.getLong("id");
+            if (id > 0)
+                mCurrentTask = id;
+            long time = savedInstanceState.getLong("time");
+            if (time > 0)
+                mCurrentTime = time;
+        }
         
         FragmentManager fm = getSupportFragmentManager();
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -106,6 +110,13 @@ public class TimeTrackerActivity extends FragmentActivity
     }
     
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putLong("id", mCurrentTask);
+        outState.putLong("time", mCurrentTime);
+        super.onSaveInstanceState(outState);
+    }
+    
+    @Override
     protected void onPause() {
         super.onPause();
     }
@@ -116,6 +127,8 @@ public class TimeTrackerActivity extends FragmentActivity
             unregisterReceiver(mTimeReceiver);
         
         if (mTimerService != null) {
+            mCurrentTask = mTimerService.getTaskId();
+            mCurrentTime = mTimerService.getTime();
             unbindService(this);
             mTimerService = null;
         }
@@ -126,14 +139,17 @@ public class TimeTrackerActivity extends FragmentActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         
-        if (resultCode == EditTaskActivity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-            long taskId = extras.getLong(EditTaskActivity.TASK_ID);
+        if (resultCode == RESULT_OK) {
+            long taskId = data.getLongExtra(EditTaskActivity.TASK_ID, 0);
+            long time = data.getLongExtra(EditTaskActivity.TASK_TIME, 0);
+            String name = data.getStringExtra(EditTaskActivity.TASK_NAME);
+            long date = data.getLongExtra(EditTaskActivity.TASK_DATE, 0);
+            String desc = data.getStringExtra(EditTaskActivity.TASK_DESCRIPTION);
+            
             if (taskId > -1) {
-                onTaskSelected(taskId, null, null, 0, 0);
+                onTaskSelected(taskId, name, desc, date, time);
             }
         }
-        
     }
     
     @Override
@@ -146,8 +162,11 @@ public class TimeTrackerActivity extends FragmentActivity
                 startService(new Intent(this, TimerService.class));
             } else if (!mTimerService.isTimerRunning()) {
                 ssButton.setText(R.string.stop);
+                mTimerService.setTask(mCurrentTask, mCurrentTime);
                 mTimerService.startService(new Intent(this, TimerService.class));
             } else {
+                mCurrentTask = mTimerService.getTaskId();
+                mCurrentTime = mTimerService.getTime();
                 ssButton.setText(R.string.start);
                 mTimerService.stopTimer();
             }
@@ -155,7 +174,8 @@ public class TimeTrackerActivity extends FragmentActivity
             // Finish the time input activity
             Intent intent = new Intent(TimeTrackerActivity.this, EditTaskActivity.class);
             intent.putExtra(EditTaskActivity.TASK_ID, mTimerService.getTaskId());
-            startActivity(intent);
+            intent.putExtra(EditTaskActivity.TASK_TIME, mTimerService.getTime());
+            startActivityForResult(intent, 0);
         } else if (v.getId() == R.id.new_task) {
             startNewTimerTask();
             ssButton.setText(R.string.start);
@@ -165,7 +185,14 @@ public class TimeTrackerActivity extends FragmentActivity
     private void startNewTimerTask() {
         mPager.setCurrentItem(0);
         mTimerService.resetTimer();
-        mPagerAdapter.mTimerFragment.setCounterTime(0);
+        
+        Resources res = getResources();
+        onTaskSelected(
+                -1,
+                res.getString(R.string.new_task),
+                res.getString(R.string.description),
+                System.currentTimeMillis(),
+                0);
     }
     
     private void bindTimerService() {
@@ -180,9 +207,9 @@ public class TimeTrackerActivity extends FragmentActivity
             long time = intent.getLongExtra("time", 0);
 
             if (ACTION_TIME_UPDATE.equals(action)) {
-                TimerFragment frag = mPagerAdapter.mTimerFragment;
+                TimerFragment frag = (TimerFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.pager+":0");
                 if (frag != null)
-                    frag.setCounterTime(time);
+                    frag.setCounter(time);
             }
         }
     };
@@ -218,14 +245,18 @@ public class TimeTrackerActivity extends FragmentActivity
     }
 
     @Override
-    public void onTaskSelected(long id, String name, String desc, long date, int time) {
+    public void onTaskSelected(long id, String name, String desc, long date, long time) {
         mPager.setCurrentItem(0);
-        TimerFragment frag = mPagerAdapter.mTimerFragment;
+        // ViewPager keeps fragments by tag: "android:switcher:<pager_id>:<item_pos>"
+        TimerFragment frag = (TimerFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:"+R.id.pager+":0");
         frag.setName(name);
         frag.setDescription(desc);
-        frag.setDate(date);
-        frag.setCounterTime(time);
-        mTimerService.setTask(id, time);
+        frag.setDate(DateUtils.formatDateTime(this, date, DATE_FLAGS));
+        frag.setCounter(time);
+        mCurrentTask = id;
+        mCurrentTime = time;
+        if (mTimerService != null)
+            mTimerService.setTask(id, time);
     }
 }
 

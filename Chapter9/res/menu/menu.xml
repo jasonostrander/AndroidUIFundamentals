@@ -2,10 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/new_task"
-        android:title="@string/new_task"/>
-
-    <item
         android:id="@+id/clear_all"
         android:title="@string/clear_all"/>
 

@@ -1,15 +1,9 @@
 package com.example;
 
 import android.app.Activity;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,27 +17,42 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.provider.TaskProvider;
-
 public class TimerFragment extends Fragment {
-
+    
     private LinearLayout mCounter;
-    private View mName;
-    private View mDescription;
-    private View mDate;
+    private Button mStartButton;
+    private Button mEditButton;
+    private TextView mName;
+    private TextView mDescription;
+    private TextView mDate;
     private Button mStartStop;
     private GestureDetector mGestureDetector;
+    private long mCurrentTime;
     
     public void setName(String name) {
-        setNameAndText(mName, R.string.detail_name, name); 
+        mName.setText(name);
     }
     
-    public void setDate(long date) {
-        setNameAndText(mDate, R.string.detail_date, Long.toString(date));
+    public void setDate(String date) {
+        mDate.setText(date);
     }
 
     public void setDescription(String description) {
-        setNameAndText(mDescription, R.string.detail_desc, description);
+        mDescription.setText(description);
+    }
+    
+    public void setCounter(long count) {
+        setCounterTime(count);
+        mCurrentTime = count;
+    }
+    
+    private TextView setNameAndText(View v, int nameId, String value) {
+        TextView name = (TextView) v.findViewById(R.id.name);
+        TextView text = (TextView) v.findViewById(R.id.text);
+        String s = getResources().getString(nameId);
+        name.setText(s);
+        text.setText(value);
+        return text;
     }
     
     @Override
@@ -51,19 +60,10 @@ public class TimerFragment extends Fragment {
             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.task_detail, null);
     }
-
-    private void setNameAndText(View v, int nameId, String value) {
-        TextView name = (TextView) v.findViewById(R.id.name);
-        TextView text = (TextView) v.findViewById(R.id.text);
-        String s = getResources().getString(nameId);
-        name.setText(s);
-        text.setText(value);
-    }
-
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         TimeTrackerActivity activity = (TimeTrackerActivity) getActivity();
         
         mGestureDetector = new GestureDetector(activity, new DoubleTapListener());
@@ -78,45 +78,58 @@ public class TimerFragment extends Fragment {
             }
         });
 
-        Button startButton = (Button) activity.findViewById(R.id.start_stop);
-        startButton.setOnClickListener(activity);
+        mStartButton = (Button) activity.findViewById(R.id.start_stop);
+        mStartButton.setOnClickListener(activity);
 
-        Button editButton = (Button) activity.findViewById(R.id.edit);
-        editButton.setOnClickListener(activity);
-
+        mEditButton = (Button) activity.findViewById(R.id.edit);
+        mEditButton.setOnClickListener(activity);
+        
         mStartStop = (Button) activity.findViewById(R.id.start_stop);
         
-        long date = System.currentTimeMillis();
-        if (savedInstanceState != null) {
-            CharSequence time = savedInstanceState.getCharSequence("currentTime");
-//            if (time != null)
-//                setCounterTime(time);
-            
-            date = savedInstanceState.getLong("dateTime", System.currentTimeMillis());
-        }
+        View v = activity.findViewById(R.id.task_name);
+        mName = setNameAndText(v, R.string.detail_name, getResources().getString(R.string.task_name));
+        
+        v = activity.findViewById(R.id.task_date);
+        String date = DateUtils.formatDateTime(getActivity(), System.currentTimeMillis(), TimeTrackerActivity.DATE_FLAGS);
+        mDate = setNameAndText(v, R.string.detail_date, date);
+        
+        v = activity.findViewById(R.id.task_desc);
+        mDescription = setNameAndText(v, R.string.detail_desc, getResources().getString(R.string.description));
+        
+        if (savedInstanceState != null)
+            setupTextViews(savedInstanceState);
+    }
+    
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putCharSequence("name", mName.getText());
+        outState.putCharSequence("date", mDate.getText());
+        outState.putCharSequence("description", mDescription.getText());
+        outState.putLong("time", mCurrentTime);
+        outState.putCharSequence("startstop", mStartButton.getText());
 
-        mName = activity.findViewById(R.id.task_name);
-        mDate = activity.findViewById(R.id.task_date);
-        mDescription = activity.findViewById(R.id.task_desc);
-        setupTextViews(null);
+        super.onSaveInstanceState(outState);
     }
 
-    private void setupTextViews(Cursor cursor) {
-        String name = null;
-        String date = null;
-        String desc = null;
-        if (cursor == null) {
-            name = getResources().getString(R.string.task_name);
-            date = DateUtils.formatDateTime(getActivity(), System.currentTimeMillis(), TimeTrackerActivity.DATE_FLAGS);
-            desc = getResources().getString(R.string.lorem_ipsum); 
-        } else {
-            name = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.NAME));
-            date = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.DATE));
-            desc = cursor.getString(cursor.getColumnIndexOrThrow(TaskProvider.Task.DESCRIPTION));
-        }
-        setNameAndText(mName, R.string.detail_name, name); 
-        setNameAndText(mDate, R.string.detail_date, date);
-        setNameAndText(mDescription, R.string.detail_desc, desc);
+    private void setupTextViews(Bundle bundle) {
+        long time = bundle.getLong("time");
+        setCounterTime(time);
+
+        String s = bundle.getString("name");
+        if (s != null)
+            mName.setText(s);
+
+        s = bundle.getString("date");
+        if (s != null)
+            mDate.setText(s);
+
+        s = bundle.getString("description");
+        if (s != null)
+            mDescription.setText(s);
+        
+        s = bundle.getString("startstop");
+        if (s != null)
+            mStartButton.setText(s);
     }
     
     private class DoubleTapListener extends GestureDetector.SimpleOnGestureListener {
@@ -128,7 +141,7 @@ public class TimerFragment extends Fragment {
         }
     }
     
-    public void setCounterTime(long time) {
+    private void setCounterTime(long time) {
         long hours = 0;
         long minutes = 0;
         long seconds = 0;
