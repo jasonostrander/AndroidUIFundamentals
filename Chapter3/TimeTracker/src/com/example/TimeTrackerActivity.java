@@ -74,7 +74,7 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
         filter.addAction(ACTION_TIMER_FINISHED);
         registerReceiver(mTimeReceiver, filter);
 
-        if (Util.isDebugMode(this)) {
+        if (Util.useStrictMode(this)) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
             .detectAll()
             .penaltyLog()
