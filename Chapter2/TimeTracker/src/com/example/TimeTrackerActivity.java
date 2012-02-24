@@ -40,7 +40,7 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
         ListView list = (ListView) findViewById(R.id.time_list);
         list.setAdapter(mTimeListAdapter);
 
-        if (Util.isDebugMode(this)) {
+        if (Util.useStrictMode(this)) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
             .detectAll()
             .penaltyLog()

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Build;
 
 public class Util {
     public static boolean isDebugMode(Context context) {
@@ -14,5 +15,9 @@ public class Util {
         } catch (NameNotFoundException e) {
         }
         return true;
+    }
+    
+    public static boolean useStrictMode(Context context) {
+        return isDebugMode(context) && Build.VERSION.SDK_INT >= 9;
     }
 }
