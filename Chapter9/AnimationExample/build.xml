@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="doubleTwist" default="help">
+
+    <!-- The local.properties file is created and updated by the 'android' tool.
+         It contains the path to the SDK. It should *NOT* be checked into
+         Version Control Systems. -->
+    <loadproperties srcFile="local.properties" />
+
+    <!-- The ant.properties file can be created by you. It is only edited by the
+         'android' tool to add properties to it.
+         This is the place to change some Ant specific build properties.
+         Here are some properties you may want to change/update:
+
+         source.dir
+             The name of the source directory. Default is 'src'.
+         out.dir
+             The name of the output directory. Default is 'bin'.
+
+         For other overridable properties, look at the beginning of the rules
+         files in the SDK, at tools/ant/build.xml
+
+         Properties related to the SDK location or the project target should
+         be updated using the 'android' tool with the 'update' action.
+
+         This file is an integral part of the build system for your
+         application and should be checked into Version Control Systems.
+
+         -->
+    <property file="ant.properties" />
+
+    <!-- The project.properties file is created and updated by the 'android'
+         tool, as well as ADT.
+
+         This contains project specific properties such as project target, and library
+         dependencies. Lower level build properties are stored in ant.properties
+         (or in .classpath for Eclipse projects).
+
+         This file is an integral part of the build system for your
+         application and should be checked into Version Control Systems. -->
+    <loadproperties srcFile="project.properties" />
+
+    <!-- quick check on sdk.dir -->
+    <fail
+            message="sdk.dir is missing. Make sure to generate local.properties using 'android update project'"
+            unless="sdk.dir"
+    />
+
+
+<!-- extension targets. Uncomment the ones where you want to do custom work
+     in between standard targets -->
+<!--
+    <target name="-pre-build">
+    </target>
+    <target name="-pre-compile">
+    </target>
+
+    /* This is typically used for code obfuscation.
+       Compiled code location: ${out.classes.absolute.dir}
+       If this is not done in place, override ${out.dex.input.absolute.dir} */
+    <target name="-post-compile">
+    </target>
+-->
+
+    <!-- Import the actual build file.
+
+         To customize existing targets, there are two options:
+         - Customize only one target:
+             - copy/paste the target into this file, *before* the
+               <import> task.
+             - customize it to your needs.
+         - Customize the whole content of build.xml
+             - copy/paste the content of the rules files (minus the top node)
+               into this file, replacing the <import> task.
+             - customize to your needs.
+
+         ***********************
+         ****** IMPORTANT ******
+         ***********************
+         In all cases you must update the value of version-tag below to read 'custom' instead of an integer,
+         in order to avoid having your file be overridden by tools such as "android update project"
+    -->
+    <!-- version-tag: custom -->
+    <import file="${sdk.dir}/tools/ant/build.xml" />
+    
+    <!-- Custom targets by dT -->
+    
+    <target name="release-all">
+      <ant inheritAll="true" target="release-all-armeabi" />
+    </target>
+
+    <target name="release-all-armeabi">
+      <ant inheritAll="true" target="build-upnp-lib" />
+      <!-- base build -->
+      <ant inheritAll="false" target="release" />
+      
+      <!-- pro build -->
+      <ant inheritAll="false" dir="pro" target="release" />
+
+      <!-- build tests -->
+      <ant inheritAll="false" target="junit-setup" />
+      <ant inheritAll="false" dir="JUnit" target="release" />
+    </target>
+
+    <target name="release-all-x86">
+      <ant inheritAll="true" target="build-upnp-lib-x86" />
+      <!-- base build -->
+      <ant inheritAll="false" target="release" />
+      
+      <!-- pro build -->
+      <ant inheritAll="false" dir="pro" target="release" />
+
+      <!-- build tests -->
+      <ant inheritAll="false" target="junit-setup" />
+      <ant inheritAll="false" dir="JUnit" target="release" />
+    </target>
+  
+    <target name="release-all-combo">
+      <ant inheritAll="true" target="build-upnp-lib" />
+      <ant inheritAll="true" target="build-upnp-lib-x86" />
+      <!-- base build -->
+      <ant inheritAll="false" target="release" />
+      
+      <!-- pro build -->
+      <ant inheritAll="false" dir="pro" target="release" />
+
+      <!-- build tests -->
+      <ant inheritAll="false" target="junit-setup" />
+      <ant inheritAll="false" dir="JUnit" target="release" />
+    </target>
+
+
+    <target name="debug-all">
+      <ant inheritAll="true" target="debug-all-armeabi" />
+    </target>
+
+    <target name="debug-all-armeabi">
+      <ant inheritAll="true" target="build-upnp-lib-debug" />
+
+      <!-- base build -->
+      <ant inheritAll="false" target="debug" />
+      
+      <!-- pro build -->
+      <ant inheritAll="false" dir="pro" target="debug" />
+
+      <!-- build tests -->
+      <ant inheritAll="false" target="junit-setup" />
+      <ant inheritAll="false" dir="JUnit" target="debug" />
+    </target>
+
+    <target name="debug-all-x86">
+      <ant inheritAll="true" target="build-upnp-lib-x86-debug" />
+
+      <!-- base build -->
+      <ant inheritAll="false" target="debug" />
+      
+      <!-- pro build -->
+      <ant inheritAll="false" dir="pro" target="debug" />
+
+      <!-- build tests -->
+      <ant inheritAll="false" target="junit-setup" />
+      <ant inheritAll="false" dir="JUnit" target="debug" />
+    </target>
+
+    <target name="build-upnp-lib-x86-debug">
+      <property name="upnp-release-target" value="Debug"/> 
+      <property name="upnp-arch" value="x86-android-linux"/> 
+      <ant inheritAll="true" target="build-upnp-lib-base" />
+    </target>
+
+    <target name="build-upnp-lib-debug">
+      <property name="upnp-release-target" value="Debug"/> 
+      <property name="upnp-arch" value="arm-android-linux"/> 
+      <ant inheritAll="true" target="build-upnp-lib-base" />
+    </target>
+    <target name="build-upnp-lib-x86">
+      <property name="upnp-release-target" value="Release"/> 
+      <property name="upnp-arch" value="x86-android-linux"/> 
+      <ant inheritAll="true" target="build-upnp-lib-base" />
+    </target>
+
+    <target name="build-upnp-lib">
+      <property name="upnp-release-target" value="Release"/> 
+      <property name="upnp-arch" value="arm-android-linux"/> 
+      <ant inheritAll="true" target="build-upnp-lib-base" />
+    </target>
+
+    <!-- Build the library and then copy it into the correct place -->
+    <target name="build-upnp-lib-base">
+        <exec executable="scons" dir="../../common/plutonisoft/platinum" failonerror="true">
+            <env key="ANDROID_NDK_ROOT" value="${ndk.dir}"/>
+            <env key="ANDROID_TARGET_PROJECT" value="${basedir}"/>
+            <env key="PLATINUM_VERSIONTAG" value="${svnrev}"/>
+            <arg value="target=${upnp-arch}"/>
+            <arg value="build_config=${upnp-release-target}"/>
+            <arg value="/"/>
+        </exec>
+    </target>
+
+    <!-- junit setup -->
+    <target name="junit-setup">
+      <exec executable="${sdk.dir}/tools/android" dir="JUnit" failonerror="true">
+        <arg value="update" />
+        <arg value="project" />
+        <arg value="-p" />
+        <arg value="." />
+      </exec>
+    </target>
+
+    <target name="clean-all">
+      <!-- base build -->
+      <ant inheritAll="false" target="clean" />
+
+      <!-- delete copied build objects from platinum directory -->
+      <delete file="./lib/PlatinumUPnP.jar" />
+      <delete>
+          <fileset dir="./libs/armeabi/" includes="libPlat*.so" />
+          <fileset dir="./libs/x86/" includes="libPlat*.so" />
+      </delete>
+      
+      <!-- pro build -->
+      <ant inheritAll="false" dir="pro" target="clean" />
+
+      <!-- clean tests -->
+      <ant inheritAll="false" target="junit-setup" />
+      <ant inheritAll="false" dir="JUnit" target="clean" />
+
+    </target>
+
+    <!-- reflect junit run-tests target at player level -->
+    <target name="run-tests">
+      <ant inheritAll="false" dir="JUnit" target="run-tests" />
+    </target>
+
+</project>
