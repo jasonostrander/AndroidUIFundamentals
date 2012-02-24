@@ -9,7 +9,7 @@ public class TimeTrackerApplication extends Application {
     public void onCreate() {
         super.onCreate();
         
-        if (Util.isDebugMode(this)) {
+        if (Util.useStrictMode(this)) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
             .detectAll()
             .penaltyLog()
