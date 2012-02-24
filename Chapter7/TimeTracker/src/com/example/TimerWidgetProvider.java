@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 public class TimerWidgetProvider extends AppWidgetProvider {
