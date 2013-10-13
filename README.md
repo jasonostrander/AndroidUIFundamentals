@@ -3,6 +3,8 @@ This is the code for the book http://www.peachpit.com/androiduifundamentals.
 
 The code for each chapter is in the corresponding folder. Chapters 2 through 9 cover the creation of a simple time tracking application. Some chapters contain addition sample code.
 
+When using Eclipse, set the build target to an Android version greater than or equal to API 9. Also, the TimeTracker should be built with the android support library.
+
 ## Chapter 1
 Basic hello world
 

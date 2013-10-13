@@ -1,6 +1,10 @@
 package com.example;
 
+import java.lang.ref.WeakReference;
+
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,13 +20,17 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
     private TimeListAdapter mTimeListAdapter = null;
     private long mStart = 0;
     private long mTime = 0;
-
+    private TimeHandler mHandler;
 
     /** Called when the activity is first created. */
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        // Create a handler to run the timer
+        mHandler = new TimeHandler(this);
 
         // Initialize the Timer
         TextView counter = (TextView) findViewById(R.id.counter);
@@ -102,16 +110,26 @@ public class TimeTrackerActivity extends Activity implements OnClickListener {
         mTime = 0;
     }
 
-    private Handler mHandler = new Handler() {
+    private static class TimeHandler extends Handler {
+        WeakReference<TimeTrackerActivity> mActivityRef;
+        
+        public TimeHandler(TimeTrackerActivity activity) {
+            mActivityRef = new WeakReference<TimeTrackerActivity>(activity);
+        }
+        
+        @Override
         public void handleMessage(Message msg) {
-            long current = System.currentTimeMillis();
-            mTime += current - mStart;
-            mStart = current;
+            TimeTrackerActivity activity = mActivityRef.get();
+            if (activity != null) {
+                long current = System.currentTimeMillis();
+                activity.mTime += current - activity.mStart;
+                activity.mStart = current;
 
-            TextView counter = (TextView) TimeTrackerActivity.this.findViewById(R.id.counter);
-            counter.setText(DateUtils.formatElapsedTime(mTime/1000));
+                TextView counter = (TextView) activity.findViewById(R.id.counter);
+                counter.setText(DateUtils.formatElapsedTime(activity.mTime/1000));
 
-            mHandler.sendEmptyMessageDelayed(0, 250);
-        };
-    };
+                sendEmptyMessageDelayed(0, 250);
+            }
+        }
+    }
 }

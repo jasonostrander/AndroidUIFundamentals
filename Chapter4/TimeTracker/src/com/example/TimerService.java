@@ -1,5 +1,7 @@
 package com.example;
 
+import java.lang.ref.WeakReference;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -21,7 +23,8 @@ public class TimerService extends Service {
     private Notification mNotification = null;
     private long mStart = 0;
     private long mTime = 0;
-
+    private TimeHandler mHandler;
+    
     public class LocalBinder extends Binder {
         TimerService getService() {
             return TimerService.this;
@@ -29,22 +32,33 @@ public class TimerService extends Service {
     }
     private final IBinder mBinder = new LocalBinder();
 
-    private Handler mHandler = new Handler() {
+    private static class TimeHandler extends Handler {
+        WeakReference<TimerService> mServiceRef;
+        
+        public TimeHandler(TimerService service) {
+            mServiceRef = new WeakReference<TimerService>(service);
+        }
+        
+        @Override
         public void handleMessage(Message msg) {
-            long current = System.currentTimeMillis();
-            mTime += current - mStart;
-            mStart = current;
-            
-            updateTime(mTime);
-            
-            mHandler.sendEmptyMessageDelayed(0, 250);
-        };
-    };
+            TimerService service = mServiceRef.get();
+            if (service != null) {
+                long current = System.currentTimeMillis();
+                service.mTime += current - service.mStart;
+                service.mStart = current;
+                
+                service.updateTime(service.mTime);
+                
+                sendEmptyMessageDelayed(0, 250);
+            }
+        }
+    }
 
     @Override
     public void onCreate() {
         Log.i(TAG, "onCreate");
         mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        mHandler = new TimeHandler(this);
     }
 
     @Override

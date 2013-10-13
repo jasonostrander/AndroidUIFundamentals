@@ -3,12 +3,14 @@ package com.example;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.StrictMode;
@@ -35,6 +37,7 @@ public class TimeTrackerActivity extends FragmentActivity implements OnClickList
     private TimerService mTimerService = null;
 
     /** Called when the activity is first created. */
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
